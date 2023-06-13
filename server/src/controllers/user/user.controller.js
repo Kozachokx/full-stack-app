@@ -1,7 +1,6 @@
 const { Router } = require('express');
 
 const { UserService } = require( './user.service');
-const { createRoutePath } = require( '../../helpers/index.js');
 const { handleAsyncError } = require('../../middleware');
 const { jwtAuthMiddleware } = require('../../middleware');
 const userService = new UserService();
@@ -24,6 +23,7 @@ router.post(
 );
 */
 
+// Use auth middleware for whole User Controller
 router.use(jwtAuthMiddleware);
 
 router.get(

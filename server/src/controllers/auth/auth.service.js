@@ -109,7 +109,7 @@ class AuthService {
 
       throw new CustomException(
         err.message || ErrorMessages.SomethingWentWrong,
-        err.code || ErrorCodes.Default,
+        err.code || ErrorCodes.RefreshToken,
       );
     }
   }

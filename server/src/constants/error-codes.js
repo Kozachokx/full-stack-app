@@ -8,6 +8,7 @@ const ErrorCodes = {
   CreateToken: 1013,
   GenerateAccessToken: 1014,
   GenerateRefreshToken: 1015,
+  RefreshToken: 1015,
   VerifyToken: 1016,
 
   Unauthorized: 1020,

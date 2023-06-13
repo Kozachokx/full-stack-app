@@ -30,6 +30,18 @@ router.post(
   handleAsyncError(async (req, res) => {
     const data = await authService.login(req.body);
 
+    // Or another way to return refreshToken
+    // Create secure cookie with refresh token
+    /*
+    res.cookie('refreshToken', data.refreshToken, {
+      httpOnly: true,   // accessible only by web server 
+      secure: true,     // https
+      sameSite: 'None', // cross-site cookie
+      //  Days * Hours * Minutes * Seconds * Miliseconds
+      maxAge: 1 * 1 * 1 * 60 * 1000 // cookie expiry: set to match refreshToken
+    });
+    */
+
     return res.status(data.status || 200).send({ data });
   }),
 );
@@ -38,6 +50,9 @@ router.post(
   '/refresh',
   loginLimiter,
   handleAsyncError(async (req, res) => {
+    // const { cookies } = req;
+    // const data = await authService.refresh(cookies.refreshToken);
+  
     const data = await authService.refresh(req.body?.refreshToken);
 
     return res.status(data.status || 200).send({ data });
