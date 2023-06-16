@@ -1,12 +1,11 @@
-const bcrypt = require('bcrypt');
 const {v4: uuid } = require('uuid');
 
 const { UserService } = require('../user/user.service');
-const { CONFIG } = require('../../config');
 const { User } = require('../../database');
-const { BadRequestException, CustomException, UnauthorizedException } = require('../../utils');
+const { BadRequestException, CustomException, UnauthorizedException, NotFoundException } = require('../../utils');
 const { EntityFields: { UserFields }, ErrorCodes, ErrorMessages, ErrorStatus } = require('../../constants');
 const { JwtService } = require('./jwt.service');
+const { BcryptService } = require('./bcrypt.service');
 
 
 class AuthService {
@@ -14,8 +13,7 @@ class AuthService {
   #_saltOrRounds;
 
   constructor() {
-    this.saltOrRounds = parseInt(CONFIG.SALT || '10');
-    this._secret = 'secret';
+    this.bcryptService = new BcryptService();
     this.userService = new UserService();
     this.jwtService = new JwtService();
     this.userRepository = User;
@@ -52,15 +50,15 @@ class AuthService {
     try {
       const user = await this.#findOneByUsername(
         username.toLowerCase(),
-        [UserFields.username, UserFields.password, UserFields.id]
+        [UserFields.username, UserFields.password, UserFields.id, UserFields.isAdmin]
       );
   
-      if (!user) throw new BadRequestException('User not found!');
+      if (!user) throw new NotFoundException('User not found!');
 
-      const isMatch = await bcrypt.compare(password, user.password);
+      const isMatch = await this.bcryptService.compare(password, user.password);
       if (!isMatch) throw new BadRequestException('Invalid credentials');
 
-      const accessToken = this.jwtService.generateAccessToken({ username, id: user.id });
+      const accessToken = this.jwtService.generateAccessToken(user);
       const refreshToken = this.jwtService.generateRefreshToken(user.id);
   
       return {
@@ -148,11 +146,11 @@ class AuthService {
         ...restParams,
         username,
         id: uuid(),
-        password: await bcrypt.hash(password, this.saltOrRounds),
+        password: await this.bcryptService.hash(password),
       };
       if (email) userParams.email = email.toLowerCase();
   
-      return await this.userService.createUser(userParams);
+      return await this.userService.isAdmin(userParams);
     } catch (err) {
       console.log(err);
 

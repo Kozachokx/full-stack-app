@@ -43,6 +43,8 @@ async function startServer() {
   app.use(notFoundHandler);
   app.use(errorMiddleware);
 
+  await connectDB();
+
   app.listen(CONFIG.PORT, () => {
     console.log(`Server is listening on port: ${CONFIG.PORT}`);
   });

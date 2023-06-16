@@ -22,6 +22,7 @@ const connectDB = async () => {
     const newConnection = await mongoose.connect(CONFIG.DB_HOST);
     dbConnection = newConnection;
     console.log('DataBase successfully connected.');
+    return dbConnection;
   } catch (error) {
     console.log('Error in DB connection: ' + error);
     throw new Error('Connection problem with DataBase');

@@ -38,7 +38,6 @@ router.get(
 router.get(
   '/:id',
   handleAsyncError(async (req, res) => {
-    // const { id } = req.query;
     const { id } = req.params;
 
     const data = await userService.getUserById(id);

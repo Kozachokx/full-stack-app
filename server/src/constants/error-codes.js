@@ -11,6 +11,7 @@ const ErrorCodes = {
   RefreshToken: 1015,
   VerifyToken: 1016,
 
+  UserInitialize: 1019,
   Unauthorized: 1020,
   UserNotFound: 1021,
 
