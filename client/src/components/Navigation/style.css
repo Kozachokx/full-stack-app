@@ -1,0 +1,48 @@
+.nav-bar {
+  position: fixed;
+  z-index: 1;
+  width: 100%;
+  max-height: 2rem;
+
+  display: flex;
+  justify-content: space-between;
+  background-color: #1111aa69
+  /* background-color: rgba(0, 100, 255, 40%); */
+}
+
+.nav-block {
+  margin: 0 8px;
+  display: flex;
+}
+
+.nav-item {
+  /* margin: 0 5px; */
+  font-size: 18px;
+  color: #fff;
+}
+
+a + a {
+  margin-left: 10px;
+}
+
+ion-icon {
+  font-size: 30px;
+  /* fill: purple; */
+
+  /* fill: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'><linearGradient id='grad'><stop offset='0%' stop-color='%23ff00cc'/><stop offset='100%' stop-color='%23333399'/></linearGradient></svg>#grad") purple; */
+  
+  /* background: -webkit-linear-gradient(#eee, #333);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; */
+  
+  /* color: linear-gradient(to top right, #ffff66 0%, #6600ff 100%); */
+  /* background: linear-gradient(to top right, #ffff66 0%, #6600ff 100%); */
+}
+
+
+@media (prefers-reduced-motion: no-preference) {
+  /* a:nth-of-type(2) .logo { */
+  .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
