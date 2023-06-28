@@ -91,7 +91,7 @@ class AuthService {
         ErrorStatus.Forbidden
       );
 
-      const user = await this.userRepository.find({ id: payload.user.id }, { username: true });
+      const user = await this.userRepository.findOne({ id: payload.user.id }, { username: true , id: true});
 
       if (!user) throw new UnauthorizedException();
 
@@ -108,15 +108,17 @@ class AuthService {
       throw new CustomException(
         err.message || ErrorMessages.SomethingWentWrong,
         err.code || ErrorCodes.RefreshToken,
+        err.status || ErrorStatus.Forbidden,
       );
     }
   }
 
-  async logout(accessToken) {
+  async logout({ accessToken, refreshToken }) {
     try {
-      console.log('Log out !!!', accessToken);
+      accessToken && refreshToken;
+      // Store refreshToken in cookie or in redis to make it unavaliable to LogIn
 
-      return { accessToken };
+      return { success: true };
     } catch (err) {
       console.log(err);
 

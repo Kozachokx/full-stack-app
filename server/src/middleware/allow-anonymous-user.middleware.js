@@ -10,14 +10,14 @@ const allowAnonymousUserMiddleware = (req, res, next) => {
     return next();
   }
 
-  console.log('After next()');
-
   token = token.slice(7);
 
   try {
     const decoded = jwtService.verifyAccessToken(token);
 
-    if (!decoded) return res.status(ErrorStatus.BadReqeust).send({ message: ErrorMessages.VerifyToken }); 
+    if (!decoded) {
+      return res.status(ErrorStatus.BadReqeust).send({ message: ErrorMessages.VerifyToken });
+    }
 
     req.user = decoded.user;
 

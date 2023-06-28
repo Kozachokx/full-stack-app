@@ -1,6 +1,14 @@
+const { SortType } = require('../../constants');
 const { Review } = require('../../database');
 const { CustomException, ErrorMessages, ErrorCodes, BadRequestException, NotFoundException } = require('../../utils');
 const { UserService } = require('../user/user.service');
+
+// TODO: Move it to entity
+const ReviewField = {
+  id: 'id',
+  updatedAt: 'updatedAt', 
+  createdAt: 'createdAt', 
+};
 
 class ReviewService {
   constructor() {
@@ -47,20 +55,51 @@ class ReviewService {
 
     if (!review) throw new NotFoundException('Review not found');
     
-    return { user: review };
+    return { review };
   }
 
-  async getAll(user) {
-    if (user) {
-      const isAdmin = this.userService.isAdmin(user.id);
-      return isAdmin
-        ? await this.reviewRepository.find()
-        : await this.reviewRepository.find({
-          $or: [{ user: user.id }, { verified: true }]
-        });
-    }
+  async getAll(user, { page, size, sortType, sortField }) {
+    try {
+      const numSkip = Number(page) > 0 ? Number(page) : 1; 
+      const numLimit = Number(size) > 0 ? Number(size) : 10; 
+      const options = {
+        skip: (numSkip - 1) * numLimit,
+        limit: numLimit,
+      };
+  
+      options.sort = {};
+      const field = Object.keys(ReviewField).includes(sortField)
+        ? sortField
+        : ReviewField.createdAt;
+  
+      options.sort[`${field}`] = SortType[`${sortType}`] || SortType.DESC;
+  
+      // let searchOptions = {};
+      let searchOptions = { verified: true }; // Default for anon users
+  
+      if (user) {
+        console.log(`User (${!!user}): `, user);
+        const isAdmin = this.userService.isAdmin(user.id);
+  
+        searchOptions = isAdmin ? {} : { $or: [{ user: user.id }, { verified: true }] };
+      }
+  
+      const reviews = await this.reviewRepository.find(searchOptions, {__v: false, _id: false }, options);
+      const count = await this.reviewRepository.find(searchOptions).count();
+    
+      return {
+        count,
+        totalPages: Math.ceil(count / numLimit),
+        reviews
+      };
+    } catch (err) {
+      console.log(err);
 
-    return await this.reviewRepository.find({ verified: true });    
+      throw new CustomException(
+        err.message || ErrorMessages.SomethingWentWrong,
+        err.code || ErrorCodes.Default,
+      );
+    }  
   }
 
   async updateReview(user, reviewParams) {

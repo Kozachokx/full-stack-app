@@ -5,7 +5,6 @@ const { handleAsyncError } = require('../../middleware');
 const { jwtAuthMiddleware } = require('../../middleware');
 const userService = new UserService();
 
-
 // const router = new Router({ mergeParams: true });
 const router = new Router();
 
@@ -30,6 +29,16 @@ router.get(
   '/all',
   handleAsyncError(async (req, res) => {
     const data = await userService.getAll();
+
+    return res.status(data.status || 200).send({ data });
+  }),
+);
+
+
+router.get(
+  '/token',
+  handleAsyncError(async (req, res) => {
+    const data = await userService.getUserById(req.user?.id);
 
     return res.status(data.status || 200).send({ data });
   }),

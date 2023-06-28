@@ -55,7 +55,7 @@ class UserService {
 
   async isAdmin(id) {
     try {
-      if (!id) throw new CustomException('Invalid user id received');
+      if (!id) throw new CustomException(`[isAdmin] Invalid user id received. Received id '${id}'.`);
 
       const user = await this.userRepository.find({ id: `${id}` });
 
@@ -63,7 +63,7 @@ class UserService {
 
       return !!user.isAdmin; 
     } catch (err) {
-      console.log(err);
+      console.log('[isAdmin] Error: ', err);
 
       throw new CustomException(
         err.message || ErrorMessages.SomethingWentWrong,
@@ -76,7 +76,7 @@ class UserService {
     try {
       const user = await this.userRepository.create(params);
 
-      if (!user) throw new CustomException('Invalid user data received');
+      if (!user) throw new CustomException('[createUser] Invalid user data received');
 
       return { user }; 
     } catch (err) {
@@ -90,8 +90,17 @@ class UserService {
   }
 
   async getUserById (id) {
-    console.log('id: ', id);
-    const user = await this.userRepository.findOne({ id });
+    if (!id) throw new BadRequestException('Not provided user.id!');
+
+    const user = await this.userRepository.findOne(
+      { id },
+      { 
+        password: false,
+        __v: false,
+        // _id: false
+      }
+    );
+
     if (!user) throw new Error('User not found');
     
     return { user };

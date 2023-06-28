@@ -28,7 +28,7 @@ router.get(
   '/all',
   allowAnonymousUserMiddleware,
   handleAsyncError(async (req, res) => {
-    const data = await reviewService.getAll(req.user);
+    const data = await reviewService.getAll(req.user, req.query);
 
     return res.status(data.status || 200).send({ data });
   }),

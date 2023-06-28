@@ -6,4 +6,5 @@ module.exports = {
   ...require('./error-codes'),
   ...require('./error-messages'),
   ...require('./error-status'),
+  ...require('./sort-types'),
 };

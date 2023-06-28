@@ -1,5 +1,10 @@
 const jwt = require('jsonwebtoken');
-const { CustomException, ErrorMessages, ErrorCodes, ErrorStatus } = require('../../utils');
+const {
+  CustomException,
+  ErrorMessages,
+  ErrorCodes,
+  ErrorStatus,
+} = require('../../utils');
 const { CONFIG } = require('../../config');
 
 class JwtService {
@@ -17,18 +22,15 @@ class JwtService {
   }
 
   /**
-   * 
+   *
    * @param {{
-    *  id: string,
-    *  username: string,
-    * }} user
-    * @param {*} jwtid 
-    * @returns 
-    */
-  generateAccessToken(
-    { username, id },
-    jwtid = undefined,
-  ) {
+   *  id: string,
+   *  username: string,
+   * }} user
+   * @param {*} jwtid
+   * @returns
+   */
+  generateAccessToken({ username, id }, jwtid = undefined) {
     try {
       const opts = {
         ...this.#BASE_OPTIONS,
@@ -39,33 +41,31 @@ class JwtService {
 
       return jwt.sign(
         {
-          user: { id: id, username }
-        }, 
+          user: { id: id, username },
+        },
         this.#accessSecret,
         {
-          expiresIn: '10s'
-        });
+          expiresIn: '10s',
+        }
+      );
     } catch (err) {
       console.log(err);
 
       throw new CustomException(
         ErrorMessages.GenerateAccessToken,
-        ErrorCodes.GenerateAccessToken,
+        ErrorCodes.GenerateAccessToken
       );
     }
   }
 
-
-  generateRefreshToken(
-    userId,
-  ) {
+  generateRefreshToken(userId, jwtid = undefined) {
     try {
       const opts = {
         ...this.#BASE_OPTIONS,
       };
 
       return jwt.sign(
-        { 
+        {
           user: { id: userId },
         },
         this.#refreshSecret,
@@ -79,39 +79,35 @@ class JwtService {
 
       throw new CustomException(
         ErrorMessages.GenerateRefreshToken,
-        ErrorCodes.GenerateRefreshToken,
+        ErrorCodes.GenerateRefreshToken
       );
     }
   }
 
-  verifyAccessToken(
-    accessToken,
-  ) {
+  verifyAccessToken(accessToken) {
     try {
-      return jwt.verify(accessToken, this.#accessSecret);      
+      const result = jwt.verify(accessToken, this.#accessSecret);
+      return result;
     } catch (err) {
       throw new CustomException(
         err.message || ErrorMessages.VerifyToken,
         err.code || ErrorCodes.VerifyToken,
-        err.staus || ErrorStatus.Forbidden,
+        err.staus || ErrorStatus.Forbidden
       );
     }
   }
 
-  verifyRefreshToken(
-    refreshToken,
-  ) {
+  verifyRefreshToken(refreshToken) {
     try {
       return jwt.verify(refreshToken, this.#refreshSecret);
     } catch (err) {
       throw new CustomException(
         err.message || ErrorMessages.VerifyToken,
         err.code || ErrorCodes.VerifyToken,
-        err.staus || ErrorStatus.Forbidden,
+        err.staus || ErrorStatus.Forbidden
       );
     }
   }
 }
 
 module.exports = { JwtService };
-

@@ -62,8 +62,8 @@ router.post(
 router.post(
   '/logout',
   handleAsyncError(async (req, res) => {
-    // const req.
-    const data = await authService.logout(3);
+    const { accessToken, refreshToken } = req.body;
+    const data = await authService.logout({ accessToken, refreshToken });
 
     return res.status(data.status || 200).send({ data });
   }),
