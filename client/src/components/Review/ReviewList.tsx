@@ -13,20 +13,16 @@ export function ReviewList() {
   const [isError, setIsError] = useState(false);
 
   const getReviews = async () => {
-    console.log(' - - - - - - - - - - - - - - - - - ')
-    setIsError(false);
     setIsLoading(true);
-    // const { data, success, error } = await backendApi.review.getAll({})
 
-    // TODO: Remove
-    const data = {}, success = true
+    const { data, success, error } = await backendApi.review.getAll({})
+
 
     setIsLoading(false);
     if (!success) setIsError(true);
 
     if (data && data.reviews && data.reviews.length > 0 && success) {
-      // data.reviews.length = 1;
-      setReviews(data.reviews || [])
+      setReviews(data.reviews);
     }
   }
 
@@ -41,11 +37,10 @@ export function ReviewList() {
   return (
     <div>
       {/* <p ref={element => console.log(2)}></p> */}
-      <p ref={element => console.log('\t\t🟥return \t\t\t\t\tReviewList return')}></p>
+      {/* <p ref={element => console.log('\t\t🟥return \t\t\t\t\tReviewList return')}></p> */}
       <h1>Reviews</h1>
       <div className='review-wrapper'>
         {/* {isError && <div>Something went wrong ...</div>} */}
-{/* 
         { isLoading
             ? ( <div>Loading ...</div> )
             : (
@@ -54,13 +49,6 @@ export function ReviewList() {
                   return <ReviewItem key={el.id} review={el} />
                 })
               )
-        } */}
-
-        { 
-                reviews.map((el, i) => {
-                  console.log('Once ', i)
-                  return <ReviewItem key={el.id} review={el} />
-                })
         }
       </div>
     </div>

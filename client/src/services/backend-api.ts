@@ -1,5 +1,6 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { useSelector } from "react-redux";
+import { LocalStorage } from "../api/local-storage";
 // import { mock } from "../../mock";
 
 // https://vitejs.dev/guide/env-and-mode.html
@@ -24,23 +25,8 @@ async function sendRequest<T>(options: AxiosRequestConfig): Promise<any> {
   try {
     // * Imposible to use HOOKS here
 
-    // const x1 = useSelector((state) => state.auth);
-    // console.log(x1);
-    // const x2 = useSelector((state) => state.auth.accessToken);
-    // console.log(x2);
-    // const x3 = useSelector((state) => state);
-    // console.log(x3);
-
     // Try to send request
     let response = await http(options);
-
-    console.warn(" ! ! ! ! ! !");
-    console.warn(response);
-
-    // Try to send request
-    // TODO: If token Experied => Generate new accessToken from refreshToken
-    // TODO: Then save new Credentials
-    // TODO: try to resend request
 
     const result = response?.data?.data || response?.data || response;
 
@@ -61,6 +47,72 @@ async function sendRequest<T>(options: AxiosRequestConfig): Promise<any> {
   }
 }
 
+/**
+ * @param {{
+ * url: string,
+ * method: string,
+ * headers?: object,
+ * data?: object,
+ * params?: object
+ * }} options
+ */
+async function sendRequestAuth<T>(options: AxiosRequestConfig, requestRetry = true): Promise<any> {
+  const tokens = LocalStorage.getTokens();
+
+  try {
+    const extraParams: AxiosRequestConfig = {};
+
+    // Add accessToken to Header
+    if (tokens) {
+      extraParams.headers = {};
+      extraParams.headers.Authorization = `Bearer ${tokens.accessToken}`;
+    }
+
+    const config = { ...options, ...extraParams };
+
+    const response = await http(config);
+
+    return {
+      data: response?.data?.data || response?.data || response,
+      success: true,
+    };
+  } catch (err: any) {
+    let error = err.response?.data || err;
+
+    // If token Experied => Generate new accessToken from refreshToken
+    if (
+      requestRetry &&
+      tokens?.refreshToken &&
+      (error.status === 403 || error.response?.status === 403)
+    ) {
+      const { data, success } = await backendApi.auth.refreshAccessToken({
+        refreshToken: tokens?.refreshToken,
+      });
+
+      if (!success) {
+        // If Refresh token has been experied => change msg
+        if (data.status === 403) {
+          data.message = `Refresh token has been experied!`;
+        }
+
+        LocalStorage.deleteTokens();
+        LocalStorage.deleteUserData();
+
+        return await sendRequestAuth(options, false);
+        // return { data, success };
+      }
+
+      // Save new Credentials
+      LocalStorage.setAccessToken({ accessToken: data.accessToken });
+
+      // Recursion to resend request | accessToken has been updated at this step
+      return await sendRequestAuth(options, false);
+    }
+
+    return { data: error, success: false };
+  }
+}
+
 const backendApi = {
   auth: {
     login: async (params) => {
@@ -72,18 +124,55 @@ const backendApi = {
         data: { username, password },
       });
     },
+
+    refreshAccessToken: async ({ refreshToken }) => {
+      return await sendRequest({
+        method: "POST",
+        url: "api/auth/refresh",
+        baseURL: API_URL,
+        data: { refreshToken },
+      });
+    },
+
+    logout: async (params) => {
+      const { accessToken, refreshToken } = params;
+      return await sendRequest({
+        method: "POST",
+        url: "api/auth/logout",
+        baseURL: API_URL,
+        data: { accessToken, refreshToken },
+      });
+    },
+  },
+
+  users: {
+    getByAuthToken: async () => {
+      const response = await sendRequestAuth({
+        method: "GET",
+        url: "api/user/token",
+        baseURL: API_URL,
+      }, false);
+      return response;
+    }
   },
 
   review: {
     getAll: async (params) => {
-      const response = await sendRequest({
+      const response = await sendRequestAuth({
         method: "GET",
         url: "api/review/all",
         baseURL: API_URL,
         ...params,
       });
       return response;
-      // return res.data;
+    },
+    getById: async (id) => {
+      const response = await sendRequestAuth({
+        method: "GET",
+        baseURL: API_URL,
+        url: `api/review/${id}`,
+      });
+      return response;
     },
   },
 };
