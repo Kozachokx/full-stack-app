@@ -7,10 +7,10 @@ const { ErrorCodes, ErrorMessages } = require('../../constants');
 
 class BcryptService {
   // Private field
-  #_saltOrRounds;
+  #_saltRounds;
 
   constructor() {
-    this.saltOrRounds = parseInt(CONFIG.SALT || '10');
+    this.#_saltRounds = Number.isNaN(Number(CONFIG.SALT)) ? 10 : Number(CONFIG.SALT, 10);
   }
 
   async compare(password, hashPassword) {
@@ -26,7 +26,7 @@ class BcryptService {
     }
   }
 
-  async hash(password, saltOrRounds = this.#_saltOrRounds) {
+  async hash(password, saltOrRounds = this.#_saltRounds) {
     try {
       return await bcrypt.hash(password, saltOrRounds);
     } catch (err) {

@@ -134,6 +134,11 @@ class AuthService {
       const { email, password, ...restParams } = params;
       const username = params.username.toLowerCase();
 
+      //Better to do in with Joi validator f.e.
+      if (!username) throw new BadRequestException('Username is requeired!');
+      if (!email) throw new BadRequestException('Email is requeired!');
+      if (!password) throw new BadRequestException('Password is requeired!');
+
       const exists = await this.#findOneByUsername(
         username
       );

@@ -1,4 +1,3 @@
-const { CONFIG } = require('../config');
 const { ErrorStatus, ErrorMessages, ErrorCodes } = require('../constants');
 const { JwtService } = require('../controllers/auth/jwt.service');
 
