@@ -8,24 +8,31 @@ interface TokensDto {
   refreshToken: string;
 }
 
+interface StoredUserDTO { 
+  id?: string;
+  assignedId?: string;
+  username?: string;
+  isAdmin?: boolean ;
+}
+
 const LocalStorage = {
-  getUser() {
+  getUser(): StoredUserDTO {
     let user = null;
     const temp = localStorage.getItem(LocalStorageEnum.User);
     if (temp) {
       user = JSON.parse(temp);
     }
 
-    return user;
+    return user as unknown as StoredUserDTO;
   },
   setUser(params) {
     if (
-          typeof params === 'object' &&
-          !Array.isArray(params) &&
-          params !== null
-      ) {
-        localStorage.setItem(LocalStorageEnum.User, JSON.stringify(params));
-      }
+      typeof params === "object" &&
+      !Array.isArray(params) &&
+      params !== null
+    ) {
+      localStorage.setItem(LocalStorageEnum.User, JSON.stringify(params));
+    }
   },
   deleteUserData() {
     localStorage.removeItem(LocalStorageEnum.User);

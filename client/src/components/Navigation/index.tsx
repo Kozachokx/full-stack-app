@@ -1,11 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import './style.css';
 import { LocalStorage } from "../../api/local-storage";
 import { logout } from "../../features";
 
+enum LocationEnum {
+  Login = 'login',
+  SignUp = 'signup',
+}
+
 export function Navigation() {
   const navigate = useNavigate();
+
+  const location = useLocation();
+  const [path, setPath] = useState('')
+
+  useEffect(() => {
+    const path = location.pathname.split('/').pop();
+    setPath(`${path}`);
+  }, [location])
+
   const [ tokens, setTokens ] = useState(''); 
 
   const tokenStorage = localStorage.getItem('tokens');
@@ -54,7 +68,9 @@ export function Navigation() {
           tokenStorage
             // ? <button className="nav-item" onClick={handleSubmit}>Logout</button>
             ? <Link to="/login" className="nav-item" onClick={handleSubmit}>Logout</Link>
-            : <Link to="/login" className="nav-item">Login</Link>
+            : path === LocationEnum.Login
+              ? <Link to="/signup" className="nav-item">SignUp</Link>
+              : <Link to="/login" className="nav-item">Login</Link>
         }
       </div>
     </nav>

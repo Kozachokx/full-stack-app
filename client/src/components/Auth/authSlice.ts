@@ -1,3 +1,5 @@
+// In the project redux is not used. 
+
 import { createSlice } from '@reduxjs/toolkit'
 
 const authSlice = createSlice({

@@ -1,0 +1,57 @@
+/* **  Styles for Login and Sign Up pages  */
+
+.signup-error {
+  text-align: left;
+  line-height: normal;
+  padding: 10px 5px;
+  font-size: 14px;
+  color: red;
+  background: rgba(255, 0, 0, 16%);
+  border: solid 1px;
+  margin: 10px 0px;
+  opacity: 0;
+}
+.signup-error.show {
+  opacity: 0;
+  transition: opacity 1s;
+}
+
+.signup-error.show {
+  opacity: 1;
+  transition: opacity 1s;
+} 
+
+
+.signup-input-error {
+  color: crimson;
+  border: solid 2px red;
+}
+
+.combo {
+  position: relative;
+  line-height: normal;
+}
+
+.show-password-icon {
+  width: 20px;
+  /* position: absolute; */
+  /* right: 0.2em; */
+  /* top: 0.1em; */
+  /* right: 4px; */
+  /* top: 9px; */
+}
+
+.show-pass {
+  background: none;
+  border: none;
+  position: absolute;
+  top: 0.5px;
+  right: 2px;
+  padding: 0;
+  cursor: pointer;
+}
+
+.combo-in-right {
+  border: none;
+  background: none;
+}

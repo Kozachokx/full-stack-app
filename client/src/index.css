@@ -74,6 +74,7 @@ body {
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
+  margin: 0px 5px 15px;
 }
 
 a {
@@ -117,20 +118,27 @@ button:focus-visible {
   }
 } */
 .content-container {
+  /* If NAVBAR / NAV BAR hiding something hide navbar-hide */
   padding-top: 1rem;
+
   display: flex;
   justify-content: center;
+  min-height: 90vh;
 }
 
+
 .review-view {
+  padding: 8px;
+
   width: calc(100% - 25%);
   max-width: 1000px;
+  font-size: 16px;
+  background-color: #151515;
+  border-radius: 10px;
+
   display: flex;
   flex-direction: column;
-  background-color: #151515;
-  padding: 8px;
-  font-size: 16px;
-  border-radius: 10px;
+  gap: 5px;
 }
 
 .cl-dark-l {
@@ -153,14 +161,20 @@ button:focus-visible {
   flex-basis: 100%;
 }
 
+/* General short stype shippets by class name  */
+/* Text */
 .t-left {
   text-align: left;
+}
+.t-center {
+  text-align: center;
 }
 
 .jc-center {
   justify-content: center;
 }
 
+/* Flex */
 .column {
   flex: 1;
 }
@@ -173,11 +187,31 @@ button:focus-visible {
 .column-4 {
   flex: 4;
 }
+
+/* Border */
 .br-4 {
   border-radius: 4px;
 }
+
+/* Width */
 .mw-10 {
   min-width: 10px;
+}
+.mw-85 {
+  min-width: 85px;
+}
+.w-100 {
+  width: 100%;
+}
+
+/* Padding */
+.p-0 {
+  padding: 0;
+}
+
+/* Margin */
+.m-0 {
+  margin: 0;
 }
 
 .reviw-view-items {
@@ -188,6 +222,18 @@ button:focus-visible {
 
 .review-view-img-container {
   width: 100%;
+}
+.review-edit-wrapper {
+  width: calc(100% - 25%);
+  max-width: 1000px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.edit-save-cancel {
+  gap: 10px;
+  display: flex;
+  align-self: end;
 }
 
 
@@ -286,4 +332,48 @@ form {
   flex-direction: column;
   align-items: flex-start;
   align-items: center;
+}
+
+/* ** Login block */
+.login-block {
+  align-self: center;
+  align-self: center;
+  min-width: 200px;
+  width: calc(100% - 5%);
+  max-width: 300px;
+}
+.login-form {
+  width: -webkit-fill-available;
+  padding: 10px;
+  border-left: 2px solid darkcyan;
+  border-bottom: 2px solid cyan;
+  border-top: 2px solid darkcyan;
+  border-right: 2px solid cyan;
+  box-shadow: inset 0px 5px 15px rgba(0,0,0,0.2), 0 4px 8px 0 rgba(0, 0, 0, 0.9), 0 6px 20px 0 rgba(0, 0, 0, 0.45);
+}
+/* All childs */
+.login-form > * {
+  margin-top: 5px;
+}
+/* All childs but NOT First and NOT Last*/
+.login-form > *:not(:first-child):not(:last-child) {
+  width: inherit;
+}
+.form-input {
+  width: inherit;
+}
+/* All [childs] > their first child*/
+.login-form > *:first-child {
+  margin-top: 0px;
+}
+.login-no-acc {
+  margin: 16px 0 0 0;
+  line-height: normal;
+}
+
+@media screen and (max-width: 450px) and (min-width: 0px) {
+  .login-block {
+    scale: 150%;
+    width: calc(100% - 200px);
+  }
 }

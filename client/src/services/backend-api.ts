@@ -124,6 +124,15 @@ const backendApi = {
         data: { username, password },
       });
     },
+    signup: async (params) => {
+      const { username, password, email } = params;
+      return await sendRequest({
+        method: "POST",
+        url: "api/auth/signup",
+        baseURL: API_URL,
+        data: { username, password, email },
+      });
+    },
 
     refreshAccessToken: async ({ refreshToken }) => {
       return await sendRequest({
