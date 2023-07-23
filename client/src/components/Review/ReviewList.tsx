@@ -23,11 +23,20 @@ export function ReviewList() {
   useEffect(() => {
     const oldSearch = searchParams.toString();
 
-    if (pageSize) searchParams.set('pageSize', `${pageSize}`);
-    if (currentPage) searchParams.set('page', `${currentPage}`);
+    if (pageSize) {
+      if (pageSize <= 1) searchParams.delete('pageSize');
+      else searchParams.set('pageSize', `${pageSize}`);
+    }
+    if (currentPage) {
+      if (currentPage <= 1) searchParams.delete('page');
+      else searchParams.set('page', `${currentPage}`);
+    }
 
-    if(oldSearch !== searchParams.toString()) {
-      window.history.pushState({}, '', `${location.pathname}?${oldSearch}`);
+    const newSearchQuery = searchParams.toString();
+
+    if(oldSearch !== newSearchQuery) {
+    // Update the URL with the new page query parameter
+      window.history.pushState({}, '', `${location.pathname}${newSearchQuery ? '?' + newSearchQuery : ''}`);
       setSearchParams(searchParams);
     }
   }, [currentPage, pageSize])
@@ -37,24 +46,9 @@ export function ReviewList() {
     setPageSize(value);
   };
 
-  // const setString 
-
-  console.warn('location', location)
-
-  const paginate = ({ selected }) => {
+  const onPaginate = ({ selected }) => {
     const newPage = selected + 1;
-
-    console.error(`${selected} >> ${newPage}`)
-
-    // searchParams.set('page', newPage);
     setCurrentPage(newPage);
-    const newSearch = searchParams.toString();
-
-    
-    // Update the URL with the new page query parameter
-    window.history.pushState({}, '', `${location.pathname}?${newSearch}`);
-    console.warn(searchParams)
-    console.warn(1)
   };
 
   const [reviews, setReviews] = useState([]);
@@ -102,7 +96,7 @@ export function ReviewList() {
       {/* <p ref={element => console.log('\t\t2-🟥return \t\t\t\t\tReviewList return')}></p> */}
       <h1>Reviews</h1>
       {
-        <div style={{ display: 'flex', justifyContent: 'space-evenly', gap: '10px' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '69px' }}>
           <div style={{ display: 'flex', gap: '10px' }}>
           <label htmlFor="select">Page size</label>
           <select id="select" onChange={onChangePageSize} className="form-select">
@@ -113,7 +107,7 @@ export function ReviewList() {
             <option value="20">20</option>
           </select>
           </div>
-          <button type="button" style={{ background: 'forestgreen', borderRadius: '8%' }}>Add review</button>
+          <button className='btn btn-save' type="button" style={{ background: 'forestgreen', borderRadius: '8%' }}>Add review</button>
         </div>
         }
       <div className="review-wrapper">
@@ -139,7 +133,7 @@ export function ReviewList() {
                 pageCount={totalPages} // Use the total number of pages
                 marginPagesDisplayed={1}
                 pageRangeDisplayed={3}
-                onPageChange={paginate}
+                onPageChange={onPaginate}
                 containerClassName={"pagination"}
                 activeClassName={"active"}
                 previousLinkClassName={currentPage === 1 ? "disabled" : ""}
