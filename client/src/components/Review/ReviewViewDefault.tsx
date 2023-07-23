@@ -1,13 +1,5 @@
 import React from 'react'
-
-const formatDate = (dateStr) => {
-  try {
-    const date = new Date(dateStr).toISOString().split("T")[0].split("-");
-    return `${date[2]}.${date[1]}.${date[0]}`;
-  } catch (error) {
-    return `${dateStr}`;
-  }
-};
+import { formatDate } from '../../shared'
 
 export default function ReviewViewDefault({ review }) {
   return (
@@ -35,15 +27,15 @@ export default function ReviewViewDefault({ review }) {
           ?
             (
               <div className="reviw-view-items row">
-                <p className="column mw-10">Created</p>
-                <p className="column-4 cl-dark-l br-4">{formatDate(review.createdAt) || ''}</p>
+                <p className="column mw-10 m-0 p-0">Created</p>
+                <p className="column-4 cl-dark-l br-4 m-0 p-0">{formatDate(review.createdAt) || ''}</p>
               </div>
             )
           :
             (
               <div className="reviw-view-items row">
-                <p className="column mw-10">Updated</p>
-                <p className="column-4 cl-dark-l br-4">{formatDate(review.updatedAt) || ''}</p>
+                <p className="column mw-10 m-0 p-0">Updated</p>
+                <p className="column-4 cl-dark-l br-4 m-0 p-0">{formatDate(review.updatedAt) || ''}</p>
               </div>
             )
       }

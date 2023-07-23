@@ -11,22 +11,18 @@ export function ReviewItem({ review }) {
   // console.log(`${new Date().getSeconds()}.${new Date().getMilliseconds()}`)
   // console.log("[?] Review Item:", review.id, new Date().toISOString());
 
-  console.log(
-    "\t\t\t🟡 \t\t\t\tReview Item:",
-    review.id,
-    `${new Date().toISOString().slice(17, 23)}`
-  );
+  // console.log("\t\t\t🟡 \t\t\t\tReview Item:", review.id, `${new Date().toISOString().slice(17, 23)}`);
 
   // console.log('\t\t🟥return \t\t\t\t\tReviewList return')
 
   useEffect(() => {
-    console.log("\t\t\t\t🔵 \t\t\tReview Item:", review.id);
+    // console.log("\t\t\t\t🔵 \t\t\tReview Item:", review.id);
   }, []);
 
   const handleOnView = (e) => {
     e.preventDefault();
 
-    console.log("Navigate to: ", `reviews/${review.id}`);
+    // console.log("Navigate to: ", `reviews/${review.id}`);
     navigate(`/reviews/${review.id}`, { state: { review }, replace: false });
   };
 
