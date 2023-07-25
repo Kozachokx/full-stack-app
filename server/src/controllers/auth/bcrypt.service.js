@@ -4,12 +4,12 @@ const { CONFIG } = require('../../config');
 const { CustomException } = require('../../utils');
 const { ErrorCodes, ErrorMessages } = require('../../constants');
 
-
 class BcryptService {
   // Private field
   #_saltRounds;
 
   constructor() {
+    // this.#_saltOrRounds = Number.isNaN(Number(CONFIG.SALT)) ? CONFIG.SALT : Number(CONFIG.SALT, 10);
     this.#_saltRounds = Number.isNaN(Number(CONFIG.SALT)) ? 10 : Number(CONFIG.SALT, 10);
   }
 
@@ -27,6 +27,7 @@ class BcryptService {
   }
 
   async hash(password, saltOrRounds = this.#_saltRounds) {
+    console.log(this);
     try {
       return await bcrypt.hash(password, saltOrRounds);
     } catch (err) {

@@ -1,8 +1,11 @@
 const { User, Note } = require('../../database');
-const { CustomException, ErrorMessages, ErrorCodes, BadRequestException, ErrorStatus, NotFoundException } = require('../../utils');
+const {
+  CustomException, ErrorMessages, ErrorCodes, BadRequestException, ErrorStatus, NotFoundException,
+} = require('../../utils');
 
 class UserService {
   #_secret;
+
   #_anonPassword;
 
   constructor() {
@@ -32,7 +35,7 @@ class UserService {
       console.log('Anonymous user has been created.');
     }
   }
- 
+
   async getAnonymUser() {
     return await this.userRepository.findOne({
       username: 'anonymous',
@@ -41,7 +44,7 @@ class UserService {
 
   async #initialize() {
     try {
-      await this.#createAnonymUserIfNotExists();      
+      await this.#createAnonymUserIfNotExists();
     } catch (err) {
       console.log('Error during user initialize. Error: ', err);
 
@@ -61,7 +64,7 @@ class UserService {
 
       if (!user) throw new NotFoundException('User not found!');
 
-      return !!user.isAdmin; 
+      return !!user.isAdmin;
     } catch (err) {
       console.log('[isAdmin] Error: ', err);
 
@@ -78,7 +81,7 @@ class UserService {
 
       if (!user) throw new CustomException('[createUser] Invalid user data received');
 
-      return { user }; 
+      return { user };
     } catch (err) {
       console.log(err);
 
@@ -89,26 +92,26 @@ class UserService {
     }
   }
 
-  async getUserById (id) {
+  async getUserById(id) {
     if (!id) throw new BadRequestException('Not provided user.id!');
 
     const user = await this.userRepository.findOne(
       { id },
-      { 
+      {
         password: false,
         __v: false,
         // _id: false
-      }
+      },
     );
 
     if (!user) throw new Error('User not found');
-    
-    return { user };
+
+    return user;
   }
 
-  async getAll () {
+  async getAll() {
     const users = await this.userRepository.find();
-    
+
     return users;
   }
 
@@ -116,13 +119,13 @@ class UserService {
     try {
       const user = await this.userRepository.findOne({ id: userParams.id });
 
-      if(!user) throw new BadRequestException('User not found!');
+      if (!user) throw new BadRequestException('User not found!');
 
       // TODO: Add logic
 
       const updatedUser = {};
 
-      return updatedUser; 
+      return updatedUser;
     } catch (err) {
       console.log(err);
 
@@ -137,7 +140,7 @@ class UserService {
     try {
       const user = await this.userRepository.findOne({ id });
 
-      if(!user) throw new BadRequestException('User not found!');
+      if (!user) throw new BadRequestException('User not found!');
 
       // Delete all user Notes
       await this.noteRepository.deleteMany({ user: user._id });
@@ -145,8 +148,8 @@ class UserService {
       const result = await user.deleteOne();
 
       return {
-        message: `User '${result.username}' with ID '${result.id}' has been deleted.`
-      }; 
+        message: `User '${result.username}' with ID '${result.id}' has been deleted.`,
+      };
     } catch (err) {
       console.log(err);
 

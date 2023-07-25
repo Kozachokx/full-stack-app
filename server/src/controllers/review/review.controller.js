@@ -1,10 +1,9 @@
 const { Router } = require('express');
 
-const { ReviewService } = require( './review.service');
+const { ReviewService } = require('./review.service');
 const { handleAsyncError, allowAnonymousUserMiddleware } = require('../../middleware');
-const { jwtAuthMiddleware } = require('../../middleware');
-const reviewService = new ReviewService();
 
+const reviewService = new ReviewService();
 
 // const router = new Router({ mergeParams: true });
 const router = new Router();

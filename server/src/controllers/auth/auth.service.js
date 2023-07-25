@@ -1,15 +1,19 @@
-const {v4: uuid } = require('uuid');
+const { v4: uuid } = require('uuid');
 
 const { UserService } = require('../user/user.service');
 const { User } = require('../../database');
-const { BadRequestException, CustomException, UnauthorizedException, NotFoundException } = require('../../utils');
-const { EntityFields: { UserFields }, ErrorCodes, ErrorMessages, ErrorStatus } = require('../../constants');
+const {
+  BadRequestException, CustomException, UnauthorizedException, NotFoundException,
+} = require('../../utils');
+const {
+  EntityFields: { UserFields }, ErrorCodes, ErrorMessages, ErrorStatus,
+} = require('../../constants');
 const { JwtService } = require('./jwt.service');
 const { BcryptService } = require('./bcrypt.service');
 
-
 class AuthService {
   #_secret;
+
   #_saltOrRounds;
 
   constructor() {
@@ -27,7 +31,7 @@ class AuthService {
         if (typeof includeFields === 'string') {
           includeFields[`${includeFields}`] = true;
         } else {
-          includeFields.forEach(field => {
+          includeFields.forEach((field) => {
             includeOpt[`${field}`] = true;
           });
         }
@@ -50,9 +54,9 @@ class AuthService {
     try {
       const user = await this.#findOneByUsername(
         username.toLowerCase(),
-        [UserFields.username, UserFields.password, UserFields.id, UserFields.isAdmin]
+        [UserFields.username, UserFields.password, UserFields.id, UserFields.isAdmin],
       );
-  
+
       if (!user) throw new NotFoundException('User not found!');
 
       const isMatch = await this.bcryptService.compare(password, user.password);
@@ -60,7 +64,7 @@ class AuthService {
 
       const accessToken = this.jwtService.generateAccessToken(user);
       const refreshToken = this.jwtService.generateRefreshToken(user.id);
-  
+
       return {
         accessToken,
         refreshToken,
@@ -85,17 +89,25 @@ class AuthService {
       // console.log(payload);
       // console.log(' ');
 
-      if (!payload) throw new CustomException(
-        ErrorMessages.Forbiden,
-        ErrorCodes.Forbiden,
-        ErrorStatus.Forbidden
-      );
+      if (!payload) {
+        throw new CustomException(
+          ErrorMessages.Forbiden,
+          ErrorCodes.Forbiden,
+          ErrorStatus.Forbidden,
+        );
+      }
 
-      const user = await this.userRepository.findOne({ id: payload.user.id }, { username: true , id: true});
+      const user = await this.userRepository.findOne({
+        id: payload.user.id,
+      }, {
+        username: true, id: true,
+      });
 
       if (!user) throw new UnauthorizedException();
 
-      const accessToken = this.jwtService.generateAccessToken({ username: user.username, id: user.id });
+      const accessToken = this.jwtService.generateAccessToken({
+        username: user.username, id: user.id,
+      });
 
       return {
         user: payload.user.id,
@@ -134,20 +146,29 @@ class AuthService {
       const { email, password, ...restParams } = params;
       const username = params.username.toLowerCase();
 
-      //Better to do in with Joi validator f.e.
+      // Better to do in with Joi validator f.e.
       if (!username) throw new BadRequestException('Username is requeired!');
       if (!email) throw new BadRequestException('Email is requeired!');
       if (!password) throw new BadRequestException('Password is requeired!');
 
-      const exists = await this.#findOneByUsername(
-        username
-      );
+      const exists = await this.userRepository.findOne({
+        $or: [{ email }, { username }],
+      }, {
+        username: true, email: true,
+      });
 
-      if (exists) throw new CustomException(
-        'User with this username already exists!',
-        ErrorCodes.Duplicate,
-        ErrorStatus.Conflict
-      );
+      if (exists) {
+        throw new CustomException(
+          `User with this ${exists.username === username
+
+            ? 'username' : 'email'} 
+          
+          
+          already exists!`,
+          ErrorCodes.Duplicate,
+          ErrorStatus.Conflict,
+        );
+      }
 
       const userParams = {
         ...restParams,
@@ -156,8 +177,8 @@ class AuthService {
         password: await this.bcryptService.hash(password),
       };
       if (email) userParams.email = email.toLowerCase();
-  
-      return await this.userService.isAdmin(userParams);
+
+      return await this.userService.createUser(userParams);
     } catch (err) {
       console.log(err);
 
@@ -167,9 +188,6 @@ class AuthService {
       );
     }
   }
-
-
-
 }
 
 module.exports = { AuthService };

@@ -9,7 +9,9 @@ const { CONFIG } = require('../../config');
 
 class JwtService {
   #BASE_OPTIONS;
+
   #accessSecret;
+
   #refreshSecret;
 
   constructor() {
@@ -41,19 +43,19 @@ class JwtService {
 
       return jwt.sign(
         {
-          user: { id: id, username },
+          user: { id, username },
         },
         this.#accessSecret,
         {
-          expiresIn: '10s',
-        }
+          expiresIn: '1h', // 0s / 1m / 1h
+        },
       );
     } catch (err) {
       console.log(err);
 
       throw new CustomException(
         ErrorMessages.GenerateAccessToken,
-        ErrorCodes.GenerateAccessToken
+        ErrorCodes.GenerateAccessToken,
       );
     }
   }
@@ -71,15 +73,15 @@ class JwtService {
         this.#refreshSecret,
         {
           ...opts,
-          expiresIn: '30s',
-        }
+          expiresIn: '1d', // 30s / 30m
+        },
       );
     } catch (err) {
       console.log(err);
 
       throw new CustomException(
         ErrorMessages.GenerateRefreshToken,
-        ErrorCodes.GenerateRefreshToken
+        ErrorCodes.GenerateRefreshToken,
       );
     }
   }
@@ -92,7 +94,7 @@ class JwtService {
       throw new CustomException(
         err.message || ErrorMessages.VerifyToken,
         err.code || ErrorCodes.VerifyToken,
-        err.staus || ErrorStatus.Forbidden
+        err.staus || ErrorStatus.Forbidden,
       );
     }
   }
@@ -104,7 +106,7 @@ class JwtService {
       throw new CustomException(
         err.message || ErrorMessages.VerifyToken,
         err.code || ErrorCodes.VerifyToken,
-        err.staus || ErrorStatus.Forbidden
+        err.staus || ErrorStatus.Forbidden,
       );
     }
   }

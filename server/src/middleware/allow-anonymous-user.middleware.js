@@ -4,7 +4,7 @@ const { JwtService } = require('../controllers/auth/jwt.service');
 const jwtService = new JwtService();
 
 const allowAnonymousUserMiddleware = (req, res, next) => {
-  let token = req.headers.Authorization || req.headers.authorization; 
+  let token = req.headers.Authorization || req.headers.authorization;
 
   if (!token || !token.startsWith('Bearer ')) {
     return next();
@@ -30,7 +30,7 @@ const allowAnonymousUserMiddleware = (req, res, next) => {
         message: err.message || ErrorMessages.Forbiden,
         status: err.status || ErrorStatus.Forbidden,
         code: err.code || ErrorCodes.VerifyToken,
-      }); 
+      });
   }
 };
 
