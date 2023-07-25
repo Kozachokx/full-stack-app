@@ -7,6 +7,8 @@ import { EyeIcon, EyeOffIcon } from "../../assets";
 import { useDispatch } from "react-redux";
 import { LocalStorage } from "../../api/local-storage";
 
+// https://www.chromium.org/developers/design-documents/create-amazing-password-forms/
+
 export function Login(props) {
   const location = useLocation();
 
@@ -60,8 +62,9 @@ export function Login(props) {
 
       const { data: userData } = await backendApi.users.getByAuthToken();
 
-      if (userData?.user) {
-        const { id, _id, username } = userData.user;
+
+      if (userData && Object.keys(userData).length > 3) {
+        const { id, _id, username } = userData;
         LocalStorage.setUser({
           id,
           assignedId: _id,
@@ -120,6 +123,7 @@ export function Login(props) {
           disabled={isLoading}
           placeholder="username"
           onChange={handleUserInput}
+          autoComplete="username"
           className={`form-input ${usernameError ? "signup-input-error" : "" }`}
         />
 
@@ -131,6 +135,7 @@ export function Login(props) {
             disabled={isLoading}
             placeholder="Password"
             onChange={handlePwdInput}
+            autoComplete="current-password"
             required={true}
             className={`form-input ${passwordError ? "signup-input-error" : "" }`}
           />

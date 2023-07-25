@@ -12,7 +12,9 @@ interface StoredUserDTO {
   id?: string;
   assignedId?: string;
   username?: string;
-  isAdmin?: boolean ;
+  lastName?: string;
+  firstName?: string;
+  isAdmin?: boolean;
 }
 
 const LocalStorage = {

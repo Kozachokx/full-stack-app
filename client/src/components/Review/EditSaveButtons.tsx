@@ -1,10 +1,18 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-export default function EditSaveButtons({ handleLogValues }) {
+export default function EditSaveButtons({
+  handleOnDeleteClick,
+  handleLogValues,
+  handleOnEditClick,
+  handleTurnEditMode,
+}) {
   const [isEditMode, setIsEditMode] = useState(false);
+  const navigate = useNavigate();
 
   const handleEdit = () => {
     setIsEditMode(true);
+    handleTurnEditMode(true);
   };
 
   const handleSave = () => {
@@ -13,26 +21,47 @@ export default function EditSaveButtons({ handleLogValues }) {
 
   const handleReset = () => {
     setIsEditMode(false);
+    handleTurnEditMode(false);
   };
 
   const handleDelete = () => {
-    // Handle delete functionality here
+    const response = confirm("Are you sure you want to delete review?");
+
+    if (response) {
+      // Handle delete functionality here
+      handleOnDeleteClick();
+    }
+  };
+
+  const goBack = (e) => {
+    e.preventDefault();
+    navigate(-1);
   };
 
   return (
-    <div>
+    <div className="flex self-center w-77 content-right gap-10 m-bottom-8">
       {!isEditMode ? (
         <>
-          <button onClick={handleEdit}>Edit</button>
-          <button onClick={handleDelete}>Delete</button>
+          <button className="btn btn-edit" onClick={goBack}>
+            Back
+          </button>
+          <button className="btn btn-edit" onClick={handleEdit}>
+            Edit
+          </button>
+          <button className="btn btn-cancel" onClick={handleDelete}>
+            Delete
+          </button>
         </>
       ) : (
         <>
-          <button onClick={handleSave}>Save</button>
-          <button onClick={handleReset}>Reset</button>
+          <button className="btn btn-save" onClick={handleSave}>
+            Save
+          </button>
+          <button className="btn btn-cancel" onClick={handleReset}>
+            Cancel
+          </button>
         </>
       )}
-      <button onClick={handleLogValues}>Log Values</button>
     </div>
   );
 }

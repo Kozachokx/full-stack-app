@@ -68,14 +68,20 @@ export function Signup() {
 
     if (!username) {
       setUsernameError(true);
-      return setError("Username is required!");
+      setError("Username is required!");
     }
 
     if (!email) {
-      return setError("Email is required!");
+      setError("Email is required!");
     }
-    if (!password) return setError("Password is required!");
-    if (!passwordConfirm) return setError("Password confirm is required!");
+    if (!password) {
+      setError("Password is required!");
+    }
+    if (!passwordConfirm) {
+      setError("Password confirm is required!");
+    }
+
+    if (error) return setIsLoading(false);
 
     const { data, success } = await backendApi.auth.signup({
       username,
@@ -87,20 +93,17 @@ export function Signup() {
       setError(data.message || data.error.message || "Something went worng!");
     }
 
-    navigate("/login", { state: { username: "kozahok" }, replace: false });
     setIsLoading(false);
+
+    if (success) {
+      navigate("/login", { state: { username, password }, replace: false });
+    }
   };
 
   useEffect(() => {
     if (password !== passwordConfirm) {
     }
   }, [passwordConfirm]);
-
-  useEffect(() => {
-    if (!error) {
-      console.log(refErr.current);
-    }
-  }, [error]);
 
   const refErr = React.useRef(null);
 

@@ -7,7 +7,7 @@ import ReviewViewEdit from "./ReviewViewEdit";
 import EditSaveButtons from "./EditSaveButtons";
 
 export function ReviewEditView({ review }) {
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(true);
   const [reviewData, setReviewData] = useState({});
 
   const location = useLocation();
@@ -22,11 +22,8 @@ export function ReviewEditView({ review }) {
   // const [reviews, setReviews] = useState([]);
   const { id } = useParams();
 
-  console.warn("ReviewEditView");
-  console.log("Params ", id);
-
-  const [ isEditable, setIsEditable ] = useState(false);
-  const [ inEditMode, setEditMode ] = useState(true);
+  const [isEditable, setIsEditable] = useState(false);
+  const [inEditMode, setEditMode] = useState(false);
 
   /*
     author: "Anonymous User"
@@ -42,26 +39,26 @@ export function ReviewEditView({ review }) {
   */
 
   let data = review || reviewState;
-  console.log("Review  data:", reviewData);
 
   if (
-    data && typeof data === 'object'&& Object.keys(data).length > 6 &&
-    !reviewData && typeof reviewData !== 'object' && Object.keys(reviewData).length < 3) {
-    setReviewData(data)
+    data &&
+    typeof data === "object" &&
+    Object.keys(data).length > 6 &&
+    !reviewData &&
+    typeof reviewData !== "object" &&
+    Object.keys(reviewData).length < 3
+  ) {
+    setReviewData(data);
   }
   const getReview = async () => {
-    console.log('Get review: ', reviewData?.id || id)
     const res = await backendApi.review.getById(reviewData?.id || id);
 
-    console.log("reviewBack:");
-    console.log(res);
-    console.log(" ");
     if (!res.success || !res.data) {
-      console.error('FAILED!')
+      console.error("FAILED!");
     }
 
     const { review } = res.data;
-    
+
     if (Object.keys(reviewData) < Object.keys(review)) {
       setReviewData(review);
     }
@@ -70,26 +67,29 @@ export function ReviewEditView({ review }) {
   };
 
   const checkIsEditable = async () => {
-    let userData = LocalStorage.getUser();
+    let localUserData = LocalStorage.getUser() || {};
 
     const isAdmin = false;
-    const { data: userBack } = await backendApi.users.getByAuthToken();
+    const {
+      data: userBack,
+    } = await backendApi.users.getByAuthToken();
 
     if (userBack && Object.keys(userBack).length > 1) {
-      if (userBack.id) userData.id = userBack.id;
-      if (userBack._id) userData.assignedId = userBack._id;
-      if (userBack.isAdmin) userData.isAdmin = userBack.isAdmin;
+      if (userBack.id) localUserData.id = userBack.id;
+      if (userBack._id) localUserData.assignedId = userBack._id;
+      if (userBack.isAdmin) localUserData.isAdmin = userBack.isAdmin;
     }
 
     // Check if has user rights or has admin rights
-    if (userData && userData.assignedId === reviewData.user) {
-      console.log('Is editable!');
+    if (
+      (localUserData && localUserData.assignedId === reviewData.user) ||
+      userBack?.isAdmin
+    ) {
       setIsEditable(true);
     }
-  }
+  };
 
   useEffect(() => {
-    console.warn('useEfecnt R E N D E R')
     if (!reviewData || Object.keys(reviewData).length < 10) {
       setIsLoading(true);
       getReview();
@@ -97,48 +97,67 @@ export function ReviewEditView({ review }) {
     checkIsEditable();
   }, []);
 
-  const handleOnChangeClick = () => {}
+  const handleTurnEditMode = (value) => {
+    if (inEditMode && !value) setEditMode(false);
+    if (!inEditMode && value) setEditMode(true);
+  };
 
-  const handleOnDeleteClick = () => {}
+  const handleOnDeleteClick = async () => {
+    const res = await backendApi.review.deleteById(reviewData?.id || id);
 
-  const handleOnSaveClick = () => {}
+    if (res.success) {
+      console.log('Success')
+    } else {
+      console.log('NOT Success')
+    }
+    // delete this review logic
+  };
 
+  const handleOnSaveClick = () => {};
 
   const [updatedValues, setUpdatedValues] = useState(review || {});
   const handleUpdateValues = (values) => {
     setUpdatedValues(values);
   };
   const handleLogValues = () => {
-    console.log('Current Values:');
-    console.log('Image URL:', updatedValues?.imageUrl);
-    console.log('Title:', updatedValues?.title);
-    console.log('Description:', updatedValues?.description);
+    console.log("Current Values:");
+    console.log("Image URL:", updatedValues?.imageUrl);
+    console.log("Title:", updatedValues?.title);
+    console.log("Description:", updatedValues?.description);
   };
 
-
-  console.log('createdAt: \t', reviewData?.createdAt)
-  console.log('updatedAt: \t', reviewData?.updatedAt)
+  const handleOnEditClick = () => {
+    if (!inEditMode) setEditMode(true);
+  };
 
   // const userData = LocalStorage.getUser();
 
   return (
-    <>
-      {
-        // true ? <EditSaveButtons handleLogValues={handleLogValues} /> : ''
-      }
+    <div className="flex flex-column items-center">
+      {isEditable ? (
+        <EditSaveButtons
+          handleOnDeleteClick={handleOnDeleteClick}
+          handleTurnEditMode={handleTurnEditMode}
+          handleOnEditClick={handleOnEditClick}
+          handleLogValues={handleLogValues}
+        />
+      ) : (
+        ""
+      )}
 
-      {
-        isLoading
-          ? 'Loading...'
-          : inEditMode
-              ? <ReviewViewEdit review={reviewData} onUpdate={handleUpdateValues} />
-              : <ReviewViewDefault review={reviewData} />
-      }
-    </>
+      {isLoading ? (
+        "Loading..."
+      ) : inEditMode ? (
+        <ReviewViewEdit review={reviewData} onUpdate={handleUpdateValues} />
+      ) : (
+        <ReviewViewDefault review={reviewData} />
+      )}
+    </div>
   );
 }
 
-{/* <div className="review-block" key={reviewData.id}>
+{
+  /* <div className="review-block" key={reviewData.id}>
   <div className="review-top">
     <img src={reviewData.imageUrl} alt="" />
     <div>
@@ -162,4 +181,5 @@ export function ReviewEditView({ review }) {
       <span>18.06.2023</span>
     </div>
   </div>
-</div>; */}
+</div>; */
+}

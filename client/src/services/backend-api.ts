@@ -92,6 +92,7 @@ async function sendRequestAuth<T>(options: AxiosRequestConfig, requestRetry = tr
       if (!success) {
         // If Refresh token has been experied => change msg
         if (data.status === 403) {
+          console.warn('Refresh token expired!')
           data.message = `Refresh token has been experied!`;
         }
 
@@ -99,7 +100,6 @@ async function sendRequestAuth<T>(options: AxiosRequestConfig, requestRetry = tr
         LocalStorage.deleteUserData();
 
         return await sendRequestAuth(options, false);
-        // return { data, success };
       }
 
       // Save new Credentials
@@ -166,18 +166,43 @@ const backendApi = {
   },
 
   review: {
+    createNew: async (params) => {
+      const { imageUrl, text, description } = params || {};
+
+      const response = await sendRequestAuth({
+        method: "POST",
+        url: `api/review`,
+        baseURL: API_URL,
+        data: { imageUrl, text, description },
+      });
+      return response;
+    },
     getAll: async (params) => {
+      const { page, size, sortField, sortType } = params || {};
+      const extraQuaryParams = [`page=${page || 1}`]
+
+      if (size > 0) extraQuaryParams.push(`size=${size}`)
+      if (sortField) extraQuaryParams.push(`sortField=${sortField}`)
+      if (sortType) extraQuaryParams.push(`sortType=${sortType}`)
+
       const response = await sendRequestAuth({
         method: "GET",
-        url: "api/review/all",
+        url: `api/review/all?${extraQuaryParams.join('&')}`,
         baseURL: API_URL,
-        ...params,
       });
       return response;
     },
     getById: async (id) => {
       const response = await sendRequestAuth({
         method: "GET",
+        baseURL: API_URL,
+        url: `api/review/${id}`,
+      });
+      return response;
+    },
+    deleteById: async (id) => {
+      const response = await sendRequestAuth({
+        method: "DELETE",
         baseURL: API_URL,
         url: `api/review/${id}`,
       });

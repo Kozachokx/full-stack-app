@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { formatDate } from "../../shared";
 
 export function ReviewItem({ review }) {
   const navigate = useNavigate();
@@ -28,10 +29,19 @@ export function ReviewItem({ review }) {
 
   return (
     <div className="review-block" key={review.id}>
-      <a href="" onClick={handleOnView} className="a-clean, img-hover-brightness">
-      {/* <Link to={{pathname: `/reviews/${review.id}`}} className="a-clean, img-hover-brightness"  review={review}> */}
+      <a
+        href=""
+        onClick={handleOnView}
+        className="a-clean, img-hover-brightness"
+      >
+        {/* <Link to={{pathname: `/reviews/${review.id}`}} className="a-clean, img-hover-brightness"  review={review}> */}
         <div className="review-top">
-          <img src={review.imageUrl} alt="" />
+          <img
+            src={review.imageUrl}
+            className="img-in-list"
+            alt="review-picture"
+            width="250"
+          />
           <div>
             <span className="text-outline">Status: </span>
             <span
@@ -45,14 +55,20 @@ export function ReviewItem({ review }) {
             </span>
           </div>
         </div>
-      {/* </Link> */}
+        {/* </Link> */}
       </a>
 
       <div className="review-bottom">
         <div className="review-text">{review.text}</div>
         <div className="review-name-date">
           <span>{review.author}</span>
-          <span>18.06.2023</span>
+          <span>
+            {formatDate(
+              review.createdAt >= review.updatedAt
+                ? review.createdAt
+                : review.updatedAt
+            )}
+          </span>
         </div>
       </div>
     </div>

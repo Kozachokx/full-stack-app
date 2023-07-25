@@ -4,8 +4,9 @@ import Public from "./Public";
 import './App.css'
 import HeaderFooterLayout from "./HeaderFooterLayout";
 import { ReviewList } from "./Review";
-import { ReviewEditView } from "./Review/ReviewEditView";
+import { ReviewEditView } from "./Review/ReviewViewEditOrView";
 import { Login, Signup } from "./Auth";
+import { ReviewAddNew } from "./Review/ReviewAddNew";
 // import { Login, Signup } from "./Auth";
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
             <Route path="reviews">
               <Route index element={<ReviewList />} />
               <Route path=":id" element={<ReviewEditView />} />
+              <Route path="add" element={<ReviewAddNew />} />
               {/* <Route path="new" element={<NewReview />} /> */}
             </Route>
           </Route>
