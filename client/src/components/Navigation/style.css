@@ -25,6 +25,10 @@
   color: #fff;
 }
 
+.nav-item:hover {
+  transform: scale(1.11);
+}
+
 a + a {
   margin-left: 10px;
 }

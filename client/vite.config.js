@@ -10,10 +10,12 @@ export default defineConfig(({ command, mode }) => {
     // vite config
     plugins: [react()],
     server: {
+        // Env PORT is avaliable at this step. 
         port: parseInt(env.PORT) || 3000,
     },
+    // Wrap env in JSON.stringify if error shows that ENV is not define
     define: {
-      __APP_ENV__: env.APP_ENV,
+      __APP_ENV__: JSON.stringify(env.APP_ENV),
       // __API_URL__: `${env.BACK_API_URL}`
     },
   }

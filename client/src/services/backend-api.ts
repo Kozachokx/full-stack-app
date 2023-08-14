@@ -200,6 +200,20 @@ const backendApi = {
       });
       return response;
     },
+    updateById: async (review) => {
+      const { id, ...restData } = review;
+      // console.log(`Update review '${id}':`, restData)
+
+      if (!id) return { success: false };
+
+      const response = await sendRequestAuth({
+        method: "PUT",
+        baseURL: API_URL,
+        url: `api/review/${id}`,
+        data: { ...restData },
+      });
+      return response;
+    },
     deleteById: async (id) => {
       const response = await sendRequestAuth({
         method: "DELETE",

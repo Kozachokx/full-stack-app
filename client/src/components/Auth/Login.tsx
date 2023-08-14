@@ -6,17 +6,32 @@ import { EyeIcon, EyeOffIcon } from "../../assets";
 
 import { useDispatch } from "react-redux";
 import { LocalStorage } from "../../api/local-storage";
+import LoginDev from "./nevLogin";
+import CONFIG from "../../config";
+import { Loader } from "../Shared/Loader";
+
+function retriveSearchParams() {
+  const queryParams = new URLSearchParams(location.search);
+  
+  return {
+    username: queryParams.get("username"),
+    password: queryParams.get("password")
+  }
+}
 
 // https://www.chromium.org/developers/design-documents/create-amazing-password-forms/
 
 export function Login(props) {
   const location = useLocation();
 
-  const propsUsername = props?.username || location?.state?.username;
-  const propsPassword = props?.username || location?.state?.password;
+  const query = retriveSearchParams();
 
-  const [username, setUsername] = useState(propsUsername || "johnny");
-  const [password, setPassword] = useState(propsPassword || "SecretPass");
+  const propsUsername = props?.username || location?.state?.username || query?.username;
+  const propsPassword = props?.username || location?.state?.password || query?.password;
+
+  const [username, setUsername] = useState(propsUsername || "");
+  const [password, setPassword] = useState(propsPassword || "");
+
   const [usernameError, setUsernameError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [showPassword, setShowPass] = useState(false);
@@ -29,7 +44,7 @@ export function Login(props) {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   const [errMsg, setErrMsg] = useState("");
 
@@ -78,11 +93,12 @@ export function Login(props) {
       // dispatch(setCredentials({ accessToken, refreshToken }));
     }
 
-    setIsLoading(false);
 
     await new Promise((resolve) =>
       setTimeout(() => resolve(console.log("Done!")), 3000)
     );
+
+    setIsLoading(false);
 
     navigate("/", { replace: true });
   };
@@ -106,22 +122,27 @@ export function Login(props) {
   return (
     <div className="login-block">
 
+      {
+        CONFIG.inDevMode ? <LoginDev /> : ''
+      }
+
       {errMsg && (
         <div className={`signup-error ${errMsg ? "show" : ""}`}>
           {errMsg}
         </div>
       )}
 
+      {/* <form className="form-middle" onSubmit={(e) => e.preventDefault()}> */}
       <form className="form-middle login-form" onSubmit={handleSubmit}>
+        { (isLoading && <Loader />) }
         <div>Login</div>
-
 
         <input
           id="username"
           type="text"
           value={username}
           disabled={isLoading}
-          placeholder="username"
+          placeholder="Username"
           onChange={handleUserInput}
           autoComplete="username"
           className={`form-input ${usernameError ? "signup-input-error" : "" }`}

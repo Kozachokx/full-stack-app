@@ -57,20 +57,20 @@ export function Navigation() {
       <div className="nav-block">
       {/* <span style={{ display: "flex" }}> */}
         <ion-icon name="rose"></ion-icon>
-        <ion-icon name="flame"></ion-icon>
-        <Link to="/" className="nav-item">Home</Link>
+        <ion-icon name="flame" style={{ display: 'none'}}></ion-icon>
+        <Link to="/" className="nav-item a-scale">Home</Link>
       {/* </span> */}
       </div>
       <div className="nav-block">
-        <Link to="/reviews" className="nav-item">Reviews</Link>
-        <Link to="/tools" className="nav-item">Tools</Link>
+        <Link to="/reviews" className="nav-item a-scale">Reviews</Link>
+        {/* <Link to="/tools" className="nav-item a-scale">Tools</Link> */}
         {
           tokenStorage
-            // ? <button className="nav-item" onClick={handleSubmit}>Logout</button>
-            ? <Link to="/login" className="nav-item" onClick={handleSubmit}>Logout</Link>
+            // ? <button className="nav-item a-scale" onClick={handleSubmit}>Logout</button>
+            ? <Link to="/login" className="nav-item a-scale" onClick={handleSubmit}>Logout</Link>
             : path === LocationEnum.Login
-              ? <Link to="/signup" className="nav-item">SignUp</Link>
-              : <Link to="/login" className="nav-item">Login</Link>
+              ? <Link to="/signup" className="nav-item a-scale">SignUp</Link>
+              : <Link to="/login" className="nav-item a-scale">Login</Link>
         }
       </div>
     </nav>

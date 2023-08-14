@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { formatDate } from "../../shared";
 import { useParams } from "react-router-dom";
-import { CustomSwitch } from "../Shared/Switch";
-import { Loader } from "../Shared/Loader";
+import { CustomSwitch, Loader } from "../Shared";
 
 export default function ReviewViewEdit({ review, onUpdate, isLoading }) {
   const { id } = useParams();

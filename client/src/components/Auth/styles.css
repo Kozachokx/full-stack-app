@@ -55,3 +55,65 @@
   border: none;
   background: none;
 }
+
+
+/* ! LOGIN Dev */
+.collapsible-content > ul {
+  text-align: left;
+  margin: 0;
+}
+
+.collapsible-content > ul > li {
+  line-height: normal;
+}
+
+
+.toggle-button {
+  background-color: #177463;
+  display: block;
+  width: 100%;
+  cursor: pointer;
+}
+
+/* HIDE CONTENT BY DEFAULT 
+  Instead of using display:none to hide the content,
+  we are using max-height: 0; opacity: 0; visibility: hidden;
+  The reason is – CSS transition cannot animate display:none
+*/
+
+.collapsible-content {
+  /* --time: 2s; */
+
+  /* padding: 0; */
+  max-height: 0;
+  /* opacity: 0; */
+  /* visibility: hidden; */
+
+  overflow: hidden;
+  background-color: #2c2c2c95;
+
+  /* property name | duration | easing function | delay */
+  transition: max-height .2s ease, overflow .1s;
+  /* transition: max-height 2s ease; */
+  /* transition: max-height .4s, opacity .4s, visibility .4s; */
+}
+
+/* HIDE CHECKBOX */
+.toggle-check { display: none; }
+/* (C) SHOW CONTENT WHEN CHECKED */
+
+.toggle-check:checked + .collapsible-content {
+  /* display: block;
+  opacity: 1; */
+  
+  /* any insanely large number if a lot of contents */
+  padding: 8px 0;
+
+  overflow: auto;
+  max-height: 105px; 
+  /* opacity: 1; */
+  /* visibility: visible; */
+}
+
+
+

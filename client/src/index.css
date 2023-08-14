@@ -125,7 +125,8 @@ button:focus-visible {
 
   display: flex;
   justify-content: center;
-  min-height: 85vh;
+  /* min-height: 85vh; */
+  min-height: calc(100vh - 93px);
 }
 
 /* .review-view {
@@ -185,6 +186,10 @@ button:focus-visible {
 
 .jc-center {
   justify-content: center;
+}
+
+.jc-right {
+  justify-content: right;
 }
 
 .block {
@@ -325,6 +330,9 @@ button:focus-visible {
 
 /* Review(s) */
 .review-wrapper {
+  position: relative;
+  min-height: 280px;
+
   padding: 1em;
   display: flex;
   flex-wrap: wrap;
@@ -421,6 +429,7 @@ form {
   max-width: 300px;
 }
 .login-form {
+  position: relative;
   width: -webkit-fill-available;
   padding: 10px;
   border-left: 2px solid darkcyan;
@@ -457,6 +466,25 @@ form {
   }
 }
 
+/* self-center w-77 content-right gap-10 m-bottom-8 */
+.btn-edit-wrapper {
+  display: flex;
+  /* align-self: center; */
+  /* width: 77%; */
+  justify-content: right;
+  /* gap: 10px; */
+  margin-bottom: 8px;
+  /* justify-content: space-between; */
+  width: 97%;
+}
+.btn-block-stick-right {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
 /* Buttons */
 .btn {
   width: 70px;
@@ -488,6 +516,16 @@ form {
   background-color: rgb(0, 190, 80);
 }
 
+.btn:disabled,
+.btn:disabled:hover,
+button[disabled]{
+  cursor: not-allowed;
+  transform: scale(1);
+  /* border: 0px solid #999999; */
+  background-color: #cccccc;
+  color: #666666;
+}
+
 .btn-cancel {
   background-color: rgb(160, 0, 18);
 }
@@ -496,6 +534,16 @@ form {
   background-color: rgb(27, 69, 130);
 }
 
+.form-select {
+  pointer-events: auto;
+  z-index: 1;
+  position: relative;
+  display: block;
+}
+.form-select option {
+  position: relative;
+  z-index: 2;
+}
 
 .review-list-on-top-wrapper {
   display: flex;
