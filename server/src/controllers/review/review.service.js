@@ -1,7 +1,11 @@
 const { SortType } = require('../../constants');
 const { Review } = require('../../database');
 const {
-  CustomException, ErrorMessages, ErrorCodes, BadRequestException, NotFoundException,
+  CustomException,
+  ErrorMessages,
+  ErrorCodes,
+  BadRequestException,
+  NotFoundException,
 } = require('../../utils');
 const { UserService } = require('../user/user.service');
 
@@ -29,7 +33,9 @@ class ReviewService {
 
       console.log(dbUser);
 
-      if (!dbUser) throw BadRequestException(`User with id '${user.id}' not found!`);
+      if (!dbUser) {
+        throw BadRequestException(`User with id '${user.id}' not found!`);
+      }
 
       const author = dbUser.firstName && dbUser.lastName
         ? `${dbUser.firstName} ${dbUser.lastName}`
@@ -44,7 +50,9 @@ class ReviewService {
         verified: false,
       });
 
-      if (!review) throw new BadRequestException('Invalid review data received');
+      if (!review) {
+        throw new BadRequestException('Invalid review data received');
+      }
 
       return { review };
     } catch (err) {
@@ -118,13 +126,16 @@ class ReviewService {
 
   async updateReview(user, reviewParams) {
     try {
-      const review = await this.reviewRepository.findOne({ id: reviewParams.id });
+      const review = await this.reviewRepository.findOne({
+        id: reviewParams.id,
+      });
 
       if (!review) throw new NotFoundException('Review not found!');
 
-      const updatedUser = {};
+      const updatedReview = await review.updateOne({ ...reviewParams });
 
-      return updatedUser;
+      return updatedReview;
+      // { acknowledged: true, modifiedCount: 1, upsertedId: null, upsertedCount: 0, matchedCount: 1 }
     } catch (err) {
       console.log(err);
 
