@@ -53,7 +53,7 @@
 
 .con-group {
   /* Set the background color for the mask */
-  background-color: #1c1c1c90; 
+  /* background-color: #1c1c1c90;  */
 }
 
 /* Apply mix-blend-mode on hover for all other .con-group elements that are not hovered */
