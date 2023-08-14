@@ -5,21 +5,16 @@ import ReviewViewDefault from "./ReviewViewDefault";
 import { LocalStorage } from "../../api/local-storage";
 import ReviewViewEdit from "./ReviewViewEdit";
 import EditSaveButtons from "./EditSaveButtons";
+import { Loader } from "../Shared/Loader";
 
 export function ReviewEditView({ review }) {
   const [isLoading, setIsLoading] = useState(true);
+  const [isUpdateLoad, setUpdateLoad] = useState(false);
   const [reviewData, setReviewData] = useState({});
 
   const location = useLocation();
   const { review: reviewState } = location?.state || {};
 
-  console.log("Input review:");
-  console.log(review);
-  console.log(" ");
-  console.log("location.state.review is:");
-  console.log(reviewState);
-
-  // const [reviews, setReviews] = useState([]);
   const { id } = useParams();
 
   const [isEditable, setIsEditable] = useState(false);
@@ -41,7 +36,6 @@ export function ReviewEditView({ review }) {
   let data = review || reviewState;
 
   if (
-    data &&
     typeof data === "object" &&
     Object.keys(data).length > 6 &&
     !reviewData &&
@@ -50,6 +44,7 @@ export function ReviewEditView({ review }) {
   ) {
     setReviewData(data);
   }
+
   const getReview = async () => {
     const res = await backendApi.review.getById(reviewData?.id || id);
 
@@ -82,7 +77,7 @@ export function ReviewEditView({ review }) {
 
     // Check if has user rights or has admin rights
     if (
-      (localUserData && localUserData.assignedId === reviewData.user) ||
+      (localUserData && localUserData.assignedId && localUserData.assignedId === reviewData.user) ||
       userBack?.isAdmin
     ) {
       setIsEditable(true);
@@ -97,9 +92,12 @@ export function ReviewEditView({ review }) {
     checkIsEditable();
   }, []);
 
-  const handleTurnEditMode = (value) => {
-    if (inEditMode && !value) setEditMode(false);
-    if (!inEditMode && value) setEditMode(true);
+  const handleOnEditClick = (value) => {
+    if (typeof value !== 'boolean') {
+      setEditMode((prev) => !prev);
+    } else {
+       setEditMode(value);
+     }
   };
 
   const handleOnDeleteClick = async () => {
@@ -113,42 +111,48 @@ export function ReviewEditView({ review }) {
     // delete this review logic
   };
 
-  const handleOnSaveClick = () => {};
-
   const [updatedValues, setUpdatedValues] = useState(review || {});
   const handleUpdateValues = (values) => {
     setUpdatedValues(values);
   };
-  const handleLogValues = () => {
-    console.log("Current Values:");
-    console.log("Image URL:", updatedValues?.imageUrl);
-    console.log("Title:", updatedValues?.title);
-    console.log("Description:", updatedValues?.description);
-  };
 
-  const handleOnEditClick = () => {
-    if (!inEditMode) setEditMode(true);
-  };
+  const handleOnSave = async () => {
+    if (typeof updatedValues !== 'object' || Object.keys(updatedValues).length <= 1) {
+      return 'Nothing to update!';
+    }
 
-  // const userData = LocalStorage.getUser();
+    setUpdateLoad(!isUpdateLoad);
+
+    // Send update request;
+    const result = await backendApi.review.updateById(updatedValues);
+
+    if (result.success) {
+      setReviewData({ ...reviewData, ...updatedValues });
+      setUpdatedValues({ id: reviewData?.id || id });
+    }
+
+    setUpdateLoad(false);
+    return { success: true };
+  }
+
 
   return (
     <div className="flex flex-column items-center">
       {isEditable ? (
         <EditSaveButtons
           handleOnDeleteClick={handleOnDeleteClick}
-          handleTurnEditMode={handleTurnEditMode}
           handleOnEditClick={handleOnEditClick}
-          handleLogValues={handleLogValues}
+          handleOnSave={handleOnSave}
+          props={{ saveButtonIsDisabled: Object.keys(updatedValues).length <= 1 }}
         />
       ) : (
         ""
       )}
-
+      {isLoading && <Loader />}
       {isLoading ? (
         "Loading..."
       ) : inEditMode ? (
-        <ReviewViewEdit review={reviewData} onUpdate={handleUpdateValues} />
+        <ReviewViewEdit review={reviewData} onUpdate={handleUpdateValues} isLoading={isUpdateLoad} />
       ) : (
         <ReviewViewDefault review={reviewData} />
       )}

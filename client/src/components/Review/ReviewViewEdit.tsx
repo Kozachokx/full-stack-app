@@ -1,61 +1,85 @@
 import React, { useEffect, useState } from "react";
 import { formatDate } from "../../shared";
 import { useParams } from "react-router-dom";
+import { CustomSwitch } from "../Shared/Switch";
+import { Loader } from "../Shared/Loader";
 
-export default function ReviewViewEdit({ review, onUpdate }) {
+export default function ReviewViewEdit({ review, onUpdate, isLoading }) {
   const { id } = useParams();
 
-  console.log(!review, typeof review);
 
   const [imageUrl, setImgUrl] = useState(review.imageUrl || "");
   const [previewImageUrl, setPreviewImgUrl] = useState(review.imageUrl || "");
   const [title, setTitle] = useState(review.text || "");
   const [description, setDesc] = useState(review.description || "");
+  const [isVerified, setVerified] = useState(review.verified || false);
 
   const handleOnPreview = () => {
     setPreviewImgUrl(imageUrl);
   };
 
-  useEffect(() => {}, []);
 
   useEffect(() => {
     // Call the onUpdate callback function with the updated values
-    onUpdate({ imageUrl, title, description });
-  }, []);
+    // onUpdate({ imageUrl, title, description });
+
+    handleOnSave();
+  }, [previewImageUrl, title, description, isVerified]);
 
   const onImgChange = (e) => setImgUrl(e.target.value);
   const onTitleChange = (e) => setTitle(e.target.value);
   const onDescriptionChange = (e) => setDesc(e.target.value);
+  const onVerifiedChange = (e) => {
+    setVerified(e.target.value);
+  }
 
   const handleOnSave = () => {
-    if (!id)
+    if (!id) {
       return console.error(`Bad 'id' from params. Provided id: '${id}'.`);
+    }
 
     const updateReview: {
       id: string;
       imageUrl?: string;
       text?: string;
       description?: string;
+      verified?: boolean;
     } = {
       id,
     };
+
+    if (review.verified !== isVerified) updateReview.verified = isVerified;
     if (review.text !== title) updateReview.text = title;
     if (review.imageUrl !== imageUrl) updateReview.imageUrl = imageUrl;
-    if (review.description !== description)
-      updateReview.description = description;
+    if (review.description !== description) updateReview.description = description;
 
-    console.log("Save: ");
-    console.log(updateReview);
-    if (Object.keys(updateReview).length <= 1) return "Nothing to update";
+    // if (Object.keys(updateReview).length <= 1) return "Nothing to update";
+
+    return onUpdate(updateReview);
   };
 
-  return !review ||
-    typeof review !== "object" ||
-    Object.keys(review).length < 3 ? (
-    "Loading..."
-  ) : (
-    <div className="review-edit-wrapper">
+  return (
+    <div className="review-edit-wrapper" style={{ position: "relative" }}>
+
+      {!review ||
+        typeof review !== "object" ||
+        Object.keys(review).length < 3 ||
+        (isLoading && <Loader />)}
+
       <div className="review-view t-left gap-10">
+        <div
+          className="reviw-view-items row"
+          style={{
+            justifyContent: "right",
+            lineHeight: "normal",
+            alignItems: "center",
+          }}
+        >
+          <p className="m-0 p-0" style={{ minWidth: "60px" }}>
+            Verified
+          </p>
+          <CustomSwitch checked={isVerified} onChange={onVerifiedChange} />
+        </div>
         <div className="reviw-view-items gap row">
           <div className="review-view-img-container column-4 w-100">
             <img

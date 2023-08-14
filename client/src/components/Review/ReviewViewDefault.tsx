@@ -1,10 +1,38 @@
 import React from "react";
 import { formatDate } from "../../shared";
+import { LocalStorage } from "../../api/local-storage";
+const revMock = {
+  description: "Some text text texs. Some text text texs. Some text text texs. Some text text texs. Some text text texs. Some text text texs. Some text text texs. Some text text texs."
+}
 
 export default function ReviewViewDefault({ review }) {
+  const [showDate, lastAction] = review.createdAt >= review.updatedAt
+    ? [review.createdAt, 'Created']
+    : [review.updatedAt, 'Updated'];
+
+  const user = LocalStorage.getUser();
+  const isAdmin = user?.isAdmin || false;
+
   return (
     <div className="review-edit-wrapper">
       <div className="review-view t-left">
+        {
+          isAdmin
+          ? (
+            <div className="reviw-view-items row jc-right" style={{}}>
+              <span className="text-outline" style={{ paddingRight: "5px" }}>Status: </span>
+              <span
+                className="text-outline"
+                style={{
+                  paddingRight: "5px",
+                  color: review.verified ? "greenyellow" : "red",
+                }}
+              >
+                {review.verified ? "Verified" : "Not Verified"}
+              </span>
+            </div>
+          ) : ''    
+        }
         <div className="reviw-view-items row">
           <div className="review-view-img-container column-4 w-100">
             <img
@@ -20,32 +48,27 @@ export default function ReviewViewDefault({ review }) {
             {review.text}
           </h2>
         </div>
-        <div className="reviw-view-items row" style={{ marginTop: "10px", maxWidth: '500px' }}>
+        <div
+          className="reviw-view-items row"
+          style={{ marginTop: "10px", maxWidth: "500px" }}
+        >
           <span className="review-head ">Description</span>
           <p className="review-description">
-            {review.description ||
-              "Some text text texs. Some text text texs. Some text text texs. Some text text texs. Some text text texs. Some text text texs. Some text text texs. Some text text texs."}
+            {review.description || ""}
           </p>
         </div>
         <div className="reviw-view-items row" style={{ marginTop: "15px" }}>
           <p className="column mw-10 m-0 p-0">Author</p>
-          <p className="column-4 br-4 w-100 m-0 p-0 t-right">{review.author || ""}</p>
+          <p className="column-4 br-4 w-100 m-0 p-0 t-right">
+            {review.author || ""}
+          </p>
         </div>
-        {review.createdAt >= review.updatedAt ? (
-          <div className="reviw-view-items row">
-            <span className="column mw-10 m-0 p-0">Created</span>
-            <p className="column-4 br-4 w-100 m-0 p-0 t-right">
-              {formatDate(review.createdAt) || ""}
+        <div className="reviw-view-items gap row">
+            <p className="column mw-85 m-0 p-0">{lastAction}</p>
+            <p className="column-4 br-4 m-0 p-0 t-right">
+              {formatDate(showDate) || ""}
             </p>
           </div>
-        ) : (
-          <div className="reviw-view-items row">
-            <span className="column mw-10 m-0 p-0">Updated</span>
-            <p className="column-4 br-4 w-100 m-0 p-0 t-right">
-              {formatDate(review.updatedAt) || ""}
-            </p>
-          </div>
-        )}
       </div>
     </div>
   );

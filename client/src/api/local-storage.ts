@@ -1,6 +1,7 @@
 enum LocalStorageEnum {
   Tokens = "tokens",
   User = "user",
+  Pagination = "pagination",
 }
 
 interface TokensDto {
@@ -18,6 +19,29 @@ interface StoredUserDTO {
 }
 
 const LocalStorage = {
+  pagination: {
+    defaultPagination: { pageSize: 4, page: 1 },
+
+    getPagination() {
+      const paginationStr = localStorage.getItem(LocalStorageEnum.Pagination);
+
+      if (!paginationStr) return this.defaultPagination; 
+      
+      const pagination = JSON.parse(paginationStr);
+
+      if (typeof pagination !== 'object') return this.defaultPagination; 
+
+      return { ...this.defaultPagination, ...pagination };
+    },
+    setPagination({ page, pageSize }) {
+      const data = {
+        page: page || 1,
+        pageSize: pageSize || 4,
+      }
+      localStorage.setItem(LocalStorageEnum.Pagination, JSON.stringify(data))
+    },
+  },
+
   getUser(): StoredUserDTO {
     let user = null;
     const temp = localStorage.getItem(LocalStorageEnum.User);

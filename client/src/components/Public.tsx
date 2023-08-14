@@ -12,10 +12,11 @@ function Public() {
       <section className="public">
         <div className="t-left readme">
           <p>
-            The project has been initialized with Vite. Vite is a frontend build
-            tool for building web applications.
-          </p>
-          <p>This application was built with the MERN stack.</p>
+            The project has been initialized with Vite (a frontend build
+            tool for building web applications).
+          </p> 
+          {/* <br/><br/> */}
+          <p>This application was built using the MERN stack.</p>
           <ul>
             <li>M - MongoDB</li>
             <li>E - Express</li>
@@ -24,22 +25,22 @@ function Public() {
           </ul>
         </div>
         <div className="container-g">
-          <div className="con-group">
-            <div className="letter-item color-mongo">M</div>
+          <a className="con-group rainbow rainbow_text_animated" title="Click to visit official MongoDB web page." href="https://www.mongodb.com/" target="_blank">
+            <div className="letter-item color-mongo rainbow_text_animated">M</div>
             <img src={MongoDBSVG} />
-          </div>
-          <div className="con-group">
-            <div className="letter-item">E</div>
+          </a>
+          <a className="con-group" title="Click to visit official ExpressJS web page." href="https://expressjs.com/" target="_blank">
+            <div className="letter-item color-express">E</div>
             <img src={ExpressSVG} style={{ filter: "invert(1)" }} />
-          </div>
-          <div className="con-group">
+          </a>
+          <a className="con-group" title="Click to visit official ReactJS web page." href="https://react.dev/" target="_blank">
             <div className="letter-item color-react">R</div>
             <img src={ReactSVG} />
-          </div>
-          <div className="con-group">
+          </a>
+          <a className="con-group" title="Click to visit official MongoDB web page." href="https://www.mongodb.com/" target="_blank">
             <div className="letter-item color-node">N</div>
             <img src={NodejsSVG} />
-          </div>
+          </a>
         </div>
       </section>
     </div>

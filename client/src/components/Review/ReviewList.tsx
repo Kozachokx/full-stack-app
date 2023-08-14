@@ -7,6 +7,8 @@ import ReactPaginate from "react-paginate";
 import "../Features/pagination-one.css";
 // import '../Features/pagination-two.css'
 import { CSSTransition } from "react-transition-group";
+import { Loader } from "../Shared/Loader";
+import { LocalStorage } from "../../api/local-storage";
 
 export function ReviewList() {
   // LOG 1
@@ -17,6 +19,7 @@ export function ReviewList() {
     new URLSearchParams(location.search)
   );
 
+  const pageSizeFromQuery = searchParams.get("pageSize");
   const pageFromQuery = searchParams.get("page");
   const initedPage =
     !isNaN(Number(pageFromQuery)) && Number(pageFromQuery) > 1
@@ -26,7 +29,10 @@ export function ReviewList() {
   const [currentPage, setCurrentPage] = useState(parseInt(initedPage || "1"));
   const [totalItems, setTotalItems] = useState(0);
 
-  const [pageSize, setPageSize] = useState(1);
+  const pag = LocalStorage.pagination.getPagination();
+  const initedPageSize = Number(pageSizeFromQuery) || pag.pageSize || 4;
+
+  const [pageSize, setPageSize] = useState(initedPageSize);
   const [totalPages, setTotalPages] = useState(1); // Add state to store total number of pages
 
   const navigate = useNavigate();
@@ -35,8 +41,14 @@ export function ReviewList() {
   useEffect(() => {
     const oldSearch = searchParams.toString();
     const totalPageAfter = Math.ceil(totalItems / pageSize);
+    LocalStorage.pagination.setPagination({
+      page: currentPage,
+      pageSize: pageSize,
+    })
 
-    if (totalItems > 0 && currentPage > 1 && currentPage > totalPageAfter) {
+    if (
+      (totalItems > 0 && currentPage > 1 && currentPage > totalPageAfter)
+    ) {
       return setCurrentPage(totalPageAfter);
     }
 
@@ -139,14 +151,13 @@ export function ReviewList() {
               id="select"
               onChange={onChangePageSize}
               className="form-select"
+              defaultValue={`${initedPageSize}`}
             >
-              <option defaultValue="1" value="1">
-                1
-              </option>
+              <option value="1">1</option>
               <option value="2">2</option>
-              <option value="5">5</option>
+              <option value="4">4</option>
               <option value="10">10</option>
-              <option value="20">20</option>
+              <option value="12">12</option>
             </select>
           </div>
           <button
@@ -167,16 +178,15 @@ export function ReviewList() {
         {/* {isError && <div>Something went wrong ...</div>} */}
 
         {/* Render the reviews */}
-        {isLoading ? (
-          <div>Loading ...</div>
-        ) : reviews && reviews.length > 0 ? (
+        {reviews && reviews.length > 0 ? (
           reviews.map((el) => <ReviewItem key={el.id} review={el} />)
         ) : (
           <div>No reviews found.</div>
         )}
+        {isLoading && <Loader />}
       </div>
       {/* Render the pagination */}
-      {!isLoading && reviews && reviews.length > 0 && (
+      {reviews && reviews.length > 0 && (
         <CSSTransition
           in={true}
           timeout={350}
@@ -185,7 +195,8 @@ export function ReviewList() {
           appear
         >
           <ReactPaginate
-            initialPage={currentPage > 0 ? currentPage - 1 : 0}
+            // initialPage={currentPage > 0 ? currentPage - 1 : 0}
+            forcePage={currentPage > 0 ? currentPage - 1 : 0}
             previousLabel={"«"}
             nextLabel={"»"}
             breakLabel={"..."}

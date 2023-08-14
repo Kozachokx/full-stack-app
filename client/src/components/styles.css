@@ -2,8 +2,7 @@
 .color-mongo { color: #00af00; }
 .color-react { color: #00cfff; }
 .color-node { color: #00ff45; }
-.color-express { color: #067d00; }
-
+.color-express { color: #ffffff; }
 
 .public-w {
   width: 100%;
@@ -36,14 +35,32 @@
   width: 100%;
   display: flex;
   flex-direction: column;
+  margin: 0px 10px;
+
+  transition: all .2s ease-in-out;
+}
+.con-group:hover {
+  transform: scale(1.22);
+  /* mix-blend-mode: multiply; */
 }
 .con-group > * {
   width: 100%;
   min-width: 80px;
   height: 100%;
 
-  background: rgba(50, 150, 50, 0.0);
+  /* background: rgba(50, 150, 50, 0.0); */
 }
+
+.con-group {
+  /* Set the background color for the mask */
+  background-color: #1c1c1c90; 
+}
+
+/* Apply mix-blend-mode on hover for all other .con-group elements that are not hovered */
+/* .con-group:hover ~ .con-group .letter-item,
+.con-group:hover ~ .con-group img {
+  mix-blend-mode: multiply;
+} */
 
 .readme {
   line-height: normal;
@@ -68,6 +85,7 @@
   }
   .con-group {
     flex-direction: row;
+    margin: 6px 0px;
   }
   .letter-item {
     width: auto;
