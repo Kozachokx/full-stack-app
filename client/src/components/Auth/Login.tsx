@@ -6,7 +6,7 @@ import { EyeIcon, EyeOffIcon } from "../../assets";
 
 import { useDispatch } from "react-redux";
 import { LocalStorage } from "../../api/local-storage";
-import LoginDev from "./nevLogin";
+import LoginDev from "./DevLogin";
 import CONFIG from "../../config";
 import { Loader } from "../Shared/Loader";
 
@@ -77,13 +77,13 @@ export function Login(props) {
 
       const { data: userData } = await backendApi.users.getByAuthToken();
 
-
       if (userData && Object.keys(userData).length > 3) {
-        const { id, _id, username } = userData;
+        const { id, _id, username, isAdmin } = userData;
         LocalStorage.setUser({
           id,
           assignedId: _id,
           username,
+          isAdmin
         });
       }
 

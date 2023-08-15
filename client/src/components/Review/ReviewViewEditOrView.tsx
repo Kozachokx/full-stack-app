@@ -64,7 +64,6 @@ export function ReviewEditView({ review }) {
   const checkIsEditable = async () => {
     let localUserData = LocalStorage.getUser() || {};
 
-    const isAdmin = false;
     const {
       data: userBack,
     } = await backendApi.users.getByAuthToken();

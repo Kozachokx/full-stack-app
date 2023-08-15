@@ -47,6 +47,17 @@ async function sendRequest<T>(options: AxiosRequestConfig): Promise<any> {
   }
 }
 
+const generateExtraQueryParams = (params) => {
+  const { page, size, sortField, sortType } = params || {};
+  const extraQuaryParams = [`page=${page || 1}`]
+
+  if (size > 0) extraQuaryParams.push(`size=${size}`)
+  if (sortField) extraQuaryParams.push(`sortField=${sortField}`)
+  if (sortType) extraQuaryParams.push(`sortType=${sortType}`)
+
+  return extraQuaryParams.join('&');
+}
+
 /**
  * @param {{
  * url: string,
@@ -178,16 +189,21 @@ const backendApi = {
       return response;
     },
     getAll: async (params) => {
-      const { page, size, sortField, sortType } = params || {};
-      const extraQuaryParams = [`page=${page || 1}`]
-
-      if (size > 0) extraQuaryParams.push(`size=${size}`)
-      if (sortField) extraQuaryParams.push(`sortField=${sortField}`)
-      if (sortType) extraQuaryParams.push(`sortType=${sortType}`)
+      const extraQuaryParams = generateExtraQueryParams(params)
 
       const response = await sendRequestAuth({
         method: "GET",
-        url: `api/review/all?${extraQuaryParams.join('&')}`,
+        url: `api/review/all?${extraQuaryParams}`,
+        baseURL: API_URL,
+      });
+      return response;
+    },
+    getOnlyUserReviews: async (params) => {
+      const extraQuaryParams = generateExtraQueryParams(params)
+
+      const response = await sendRequestAuth({
+        method: "GET",
+        url: `api/review/my?${extraQuaryParams}`,
         baseURL: API_URL,
       });
       return response;

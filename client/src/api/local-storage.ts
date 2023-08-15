@@ -2,6 +2,7 @@ enum LocalStorageEnum {
   Tokens = "tokens",
   User = "user",
   Pagination = "pagination",
+  Filters = "filters",
 }
 
 interface TokensDto {
@@ -19,6 +20,22 @@ interface StoredUserDTO {
 }
 
 const LocalStorage = {
+  setFilters(params) {
+    if (
+      typeof params === "object"
+    ) {
+      localStorage.setItem(LocalStorageEnum.Filters, JSON.stringify(params));
+    }
+  },
+  getFilters() {
+    let filters = {};
+    const temp = localStorage.getItem(LocalStorageEnum.Filters);
+    if (temp) {
+      filters = JSON.parse(temp);
+    }
+
+    return filters;
+  },
   pagination: {
     defaultPagination: { pageSize: 4, page: 1 },
 

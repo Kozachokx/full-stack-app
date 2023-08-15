@@ -11,14 +11,16 @@ export default function ReviewViewDefault({ review }) {
     : [review.updatedAt, 'Updated'];
 
   const user = LocalStorage.getUser();
+  const haveAuthorRights = !!review?.user && !!user.assignedId && review.user === user.assignedId;
+
   const isAdmin = user?.isAdmin || false;
 
   return (
     <div className="review-edit-wrapper">
       <div className="review-view t-left">
         {
-          isAdmin
-          ? (
+          (isAdmin || haveAuthorRights) &&
+          (
             <div className="reviw-view-items row jc-right" style={{}}>
               <span className="text-outline" style={{ paddingRight: "5px" }}>Status: </span>
               <span
@@ -31,7 +33,7 @@ export default function ReviewViewDefault({ review }) {
                 {review.verified ? "Verified" : "Not Verified"}
               </span>
             </div>
-          ) : ''    
+          )   
         }
         <div className="reviw-view-items row">
           <div className="review-view-img-container column-4 w-100">

@@ -24,17 +24,19 @@ export function ReviewAddNew({}) {
       console.log(userData)
 
       if (userData) {
-        const { id, _id, username } = userData;
+        const { id, _id, username, isAdmin } = userData;
         const user: {
           id: string;
           assignedId: string;
           username: string;
           firstName?: string;
           lastName?: string;
+          isAdmin?: boolean;
         } = {
           id,
           assignedId: _id,
           username,
+          isAdmin: isAdmin || false,
         };
         if (userData.firstName) user.firstName = userData.firstName;
         if (userData.lastName) user.lastName = userData.lastName;

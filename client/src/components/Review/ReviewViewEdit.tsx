@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import { formatDate } from "../../shared";
 import { useParams } from "react-router-dom";
 import { CustomSwitch, Loader } from "../Shared";
+import { LocalStorage } from "../../api/local-storage";
 
 export default function ReviewViewEdit({ review, onUpdate, isLoading }) {
   const { id } = useParams();
-
 
   const [imageUrl, setImgUrl] = useState(review.imageUrl || "");
   const [previewImageUrl, setPreviewImgUrl] = useState(review.imageUrl || "");
@@ -31,6 +31,8 @@ export default function ReviewViewEdit({ review, onUpdate, isLoading }) {
   const onVerifiedChange = (e) => {
     setVerified(e.target.value);
   }
+
+  const user = LocalStorage.getUser();
 
   const handleOnSave = () => {
     if (!id) {
@@ -66,19 +68,22 @@ export default function ReviewViewEdit({ review, onUpdate, isLoading }) {
         (isLoading && <Loader />)}
 
       <div className="review-view t-left gap-10">
-        <div
-          className="reviw-view-items row"
-          style={{
-            justifyContent: "right",
-            lineHeight: "normal",
-            alignItems: "center",
-          }}
-        >
-          <p className="m-0 p-0" style={{ minWidth: "60px" }}>
-            Verified
-          </p>
-          <CustomSwitch checked={isVerified} onChange={onVerifiedChange} />
-        </div>
+        {
+          user?.isAdmin &&
+          <div
+            className="reviw-view-items row"
+            style={{
+              justifyContent: "right",
+              lineHeight: "normal",
+              alignItems: "center",
+            }}
+          >
+            <p className="m-0 p-0" style={{ minWidth: "60px" }}>
+              Verified
+            </p>
+            <CustomSwitch checked={isVerified} onChange={onVerifiedChange} />
+          </div>
+        }
         <div className="reviw-view-items gap row">
           <div className="review-view-img-container column-4 w-100">
             <img

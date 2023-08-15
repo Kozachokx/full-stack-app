@@ -1,9 +1,13 @@
 import React, { useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { formatDate } from "../../shared";
+import { LocalStorage } from "../../api/local-storage";
 
 export function ReviewItem({ review }) {
   const navigate = useNavigate();
+
+  const user = LocalStorage.getUser();
+  const isAdmin = user?.isAdmin || false;
 
   // const [getReview, setReview] = useState([]);
 
@@ -42,18 +46,20 @@ export function ReviewItem({ review }) {
             alt="review-picture"
             width="250"
           />
-          <div>
-            <span className="text-outline">Status: </span>
-            <span
-              className="text-outline"
-              style={{
-                paddingRight: "5px",
-                color: review.verified ? "greenyellow" : "red",
-              }}
-            >
-              {review.verified ? "Verified" : "Not Verified"}
-            </span>
-          </div>
+          {
+            isAdmin && (<div>
+              <span className="text-outline">Status: </span>
+              <span
+                className="text-outline"
+                style={{
+                  paddingRight: "5px",
+                  color: review.verified ? "greenyellow" : "red",
+                }}
+              >
+                {review.verified ? "Verified" : "Not Verified"}
+              </span>
+            </div>)
+          }
         </div>
         {/* </Link> */}
       </a>

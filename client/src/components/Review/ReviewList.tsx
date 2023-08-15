@@ -35,6 +35,24 @@ export function ReviewList() {
   const [pageSize, setPageSize] = useState(initedPageSize);
   const [totalPages, setTotalPages] = useState(1); // Add state to store total number of pages
 
+
+  const user = LocalStorage.getUser();
+  const filters = LocalStorage.getFilters();
+
+  const isLoggedWithFilters = user?.id && filters?.onlyUserReviews || false
+  const [onlyUserReviews, setOnlyUserReviews] = useState(isLoggedWithFilters);
+
+  function onlyMyReviewHandle(e) {
+    const user = LocalStorage.getUser();
+    if (!user && !user?.id) {
+      return;
+    }
+
+    LocalStorage.setFilters({ onlyUserReviews: e.target.checked });
+
+    setOnlyUserReviews(e.target.checked);
+  }
+
   const navigate = useNavigate();
 
   // Change url search params
@@ -72,7 +90,7 @@ export function ReviewList() {
       );
       setSearchParams(searchParams);
     }
-  }, [currentPage, pageSize]);
+  }, [currentPage, pageSize, totalItems]);
 
   const onChangePageSize = (event) => {
     const value = Number(event.target.value);
@@ -98,10 +116,14 @@ export function ReviewList() {
     setIsLoading(true);
 
     try {
-      const { data, success, error } = await backendApi.review.getAll({
+      const pagination = {
         page,
         size: pageSize,
-      });
+      }
+
+      const { data, success, error } = onlyUserReviews
+        ? await backendApi.review.getOnlyUserReviews(pagination)
+        : await backendApi.review.getAll(pagination);
 
       setIsLoading(false);
 
@@ -121,6 +143,7 @@ export function ReviewList() {
 
       // Update the total number of pages
       if (data && data.totalPages) {
+        console.warn('set totalPages', data.totalPages)
         setTotalPages(data.totalPages);
       }
     } catch (error) {
@@ -133,13 +156,19 @@ export function ReviewList() {
     // LOG 3
     // console.log('\t3-🟦useEffect \t\t\t\t\t\t\tReviewList useEffect')
     getReviews(currentPage);
-  }, [currentPage, pageSize]);
+  }, [currentPage, pageSize, onlyUserReviews]);
 
   // LOG 2
   return (
     <div>
       {/* <p ref={element => console.log('\t\t2-🟥return \t\t\t\t\tReviewList return')}></p> */}
       <h1>Reviews</h1>
+      {
+        !!user && (<div className="review-list-on-top-wrapper" style={{ gap: '10px' }}>
+          <label htmlFor="myonly">My Reviews only</label>
+          <input type="checkbox" name="myonly" id="myonly" defaultChecked={onlyUserReviews} onChange={onlyMyReviewHandle}/>
+        </div>)
+      }
       {
         <div className="review-list-on-top-wrapper">
           <div
@@ -178,11 +207,15 @@ export function ReviewList() {
         {/* {isError && <div>Something went wrong ...</div>} */}
 
         {/* Render the reviews */}
-        {reviews && reviews.length > 0 ? (
-          reviews.map((el) => <ReviewItem key={el.id} review={el} />)
-        ) : (
-          <div>No reviews found.</div>
-        )}
+        {
+        reviews && reviews.length > 0
+          ? (
+              reviews.map((el) => <ReviewItem key={el.id} review={el} />)
+            )
+          : !isLoading && (
+              <div>No reviews found.</div>
+            )
+        }
         {isLoading && <Loader />}
       </div>
       {/* Render the pagination */}
