@@ -127,6 +127,8 @@ button:focus-visible {
   justify-content: center;
   /* min-height: 85vh; */
   min-height: calc(100vh - 93px);
+
+  width: 100%;
 }
 
 /* .review-view {

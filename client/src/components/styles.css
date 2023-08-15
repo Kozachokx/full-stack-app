@@ -7,14 +7,22 @@
 .public-w {
   width: 100%;
   padding: 0px 10px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 .public {
   display: flex;
-  /* width: 100%; */
-  /* align-items: center; */
+  width: 100%;
+
   flex-direction: column;
   align-items: center;
   padding: 0px 10px;
+
+  /* max-width: 800px; */
+  /* align-items: flex-start; */
+  justify-content: center;
 }
 .letter-item {
   width: 100%;
@@ -23,16 +31,21 @@
 
 
 .container-g {
+  margin-top: 1.5rem;
   display: flex;
   flex-direction: row;
-  max-width: 700px;
+  /* max-width: 700px; */
   width: calc(100% - 80px);
+  /* width: inherit; */
+  align-self: center;
+  justify-content: space-evenly;
 
   line-height: normal;
   font-size: 45px;
 }
 .con-group {
-  width: 100%;
+  width: auto;
+  /* width: 100%; */
   display: flex;
   flex-direction: column;
   margin: 0px 10px;
@@ -44,16 +57,18 @@
   /* mix-blend-mode: multiply; */
 }
 .con-group > * {
+  /* width: inherit; */
   width: 100%;
   min-width: 80px;
   height: 100%;
 
   /* background: rgba(50, 150, 50, 0.0); */
 }
-
-.con-group {
-  /* Set the background color for the mask */
-  /* background-color: #1c1c1c90;  */
+.con-group > div {
+  flex: 1;
+}
+.con-group > img {
+  flex: 2;
 }
 
 /* Apply mix-blend-mode on hover for all other .con-group elements that are not hovered */
@@ -64,13 +79,29 @@
 
 .readme {
   line-height: normal;
-  margin-bottom: 1em;
+  margin-bottom: 2.2em;
+
+  max-width: 700px;
+  /* align-self: center; */
 }
 .readme > p {
   margin: 10px 0 0;
+  line-height: 1.5rem;
 }
-.readme > ul {
+
+
+.tech-stack h2 {
+  margin: 0px 0 10px;
+}
+.tech-stack ul {
   margin: 0;
+  list-style: none;
+  padding: 0 0 0 22px;
+}
+
+.tech-stack li {
+  text-align: left;
+  line-height: 1.45rem;
 }
 
 /* @media screen and (max-width: 400px) and (min-width: 240px) { */
@@ -79,9 +110,14 @@
     display: flex;
   }
   .container-g {
-    flex-direction: column;
+    /* margin-left: -3rem; */
+    margin: 1rem 0 2rem -3rem;
     width: calc(100% - 50%);
+
+    flex-direction: column;
     justify-content: center;
+
+    gap: 0.4rem;
   }
   .con-group {
     flex-direction: row;

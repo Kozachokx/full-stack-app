@@ -7,6 +7,7 @@ import { ReviewList } from "./Review";
 import { ReviewEditView } from "./Review/ReviewViewEditOrView";
 import { Login, Signup } from "./Auth";
 import { ReviewAddNew } from "./Review/ReviewAddNew";
+import Home from "./Home";
 // import { Login, Signup } from "./Auth";
 
 function App() {
@@ -16,7 +17,8 @@ function App() {
         <Route path="/" element={<Layout />}>
 
           <Route path="" element={<HeaderFooterLayout />}>
-            <Route index element={<Public />} />
+            <Route index element={<Home />} />
+            <Route path="/about" element={<Public />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="reviews">

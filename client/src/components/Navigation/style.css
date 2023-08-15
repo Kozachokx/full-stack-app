@@ -17,6 +17,7 @@
 .nav-block {
   margin: 0 8px;
   display: flex;
+  gap: 1rem;
 }
 
 .nav-item {
@@ -29,9 +30,9 @@
   transform: scale(1.11);
 }
 
-a + a {
+/* a + a {
   margin-left: 10px;
-}
+} */
 
 ion-icon {
   font-size: 30px;

@@ -59,10 +59,11 @@ export function Navigation() {
         <ion-icon name="rose"></ion-icon>
         <ion-icon name="flame" style={{ display: 'none'}}></ion-icon>
         <Link to="/" className="nav-item a-scale">Home</Link>
+        <Link to="/reviews" className="nav-item a-scale">Reviews</Link>
+        <Link to="/about" className="nav-item a-scale">About</Link>
       {/* </span> */}
       </div>
       <div className="nav-block">
-        <Link to="/reviews" className="nav-item a-scale">Reviews</Link>
         {/* <Link to="/tools" className="nav-item a-scale">Tools</Link> */}
         {
           tokenStorage

@@ -1,0 +1,80 @@
+/* About.css */
+
+/* Global Styles */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* Main Container */
+.about-container {
+  padding: 20px;
+  background-color: #1c1c1c;
+  color: #fff;
+  text-align: center;
+}
+
+/* Header */
+.about-container h1 {
+  margin-bottom: 20px;
+}
+
+/* About Content */
+.about-content {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.about-text {
+  flex: 1;
+  margin-right: 40px;
+}
+
+.about-text p {
+  margin-bottom: 20px;
+}
+
+/* Tech Stack */
+.tech-stack {
+  flex: 1;
+}
+
+.tech-stack h2 {
+  margin-bottom: 20px;
+  color: #fff;
+}
+
+.tech-stack ul {
+  list-style: none;
+  padding: 0;
+}
+
+.tech-stack li {
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  color: #ccc;
+}
+
+.tech-stack a {
+  margin-right: 10px;
+}
+
+.tech-stack img {
+  width: 30px;
+  height: 30px;
+  vertical-align: middle;
+}
+
+/* Links */
+.tech-stack a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.tech-stack a:hover {
+  text-decoration: underline;
+}
