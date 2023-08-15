@@ -143,7 +143,6 @@ export function ReviewList() {
 
       // Update the total number of pages
       if (data && data.totalPages) {
-        console.warn('set totalPages', data.totalPages)
         setTotalPages(data.totalPages);
       }
     } catch (error) {

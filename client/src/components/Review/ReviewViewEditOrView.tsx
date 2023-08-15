@@ -64,6 +64,10 @@ export function ReviewEditView({ review }) {
   const checkIsEditable = async () => {
     let localUserData = LocalStorage.getUser() || {};
 
+    if (Object.keys(localUserData).length < 2) {
+      return;
+    }
+
     const {
       data: userBack,
     } = await backendApi.users.getByAuthToken();
@@ -109,6 +113,7 @@ export function ReviewEditView({ review }) {
     }
     // delete this review logic
   };
+
 
   const [updatedValues, setUpdatedValues] = useState(review || {});
   const handleUpdateValues = (values) => {

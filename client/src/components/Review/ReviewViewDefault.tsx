@@ -11,7 +11,7 @@ export default function ReviewViewDefault({ review }) {
     : [review.updatedAt, 'Updated'];
 
   const user = LocalStorage.getUser();
-  const haveAuthorRights = !!review?.user && !!user.assignedId && review.user === user.assignedId;
+  const haveAuthorRights = !!review?.user && !!user?.assignedId && review.user === user.assignedId;
 
   const isAdmin = user?.isAdmin || false;
 
